@@ -56,5 +56,10 @@ body {
 
 .container {
     flex: 1;
-    padding: 0 20px; /* Adds 20px padding on the left and right */
+    padding: 0 20px !important; /* Adds 20px padding on the left and right */
+}
+
+.row{
+    padding: 79px !important; /* Override padding for .row */
+
 }
