@@ -8,7 +8,7 @@ dynamodb = boto3.resource('dynamodb')
 @app.route('/')
 def place_bet():
     # Render the place bet HTML page
-    return render_template('place_bet.html')
+    return render_template('placebet.html')
 
 @app.route('/submit_bet', methods=['POST'])
 def submit_bet():
@@ -26,7 +26,7 @@ def pending_bets():
 @app.route('/leaderboard')
 def leaderboard():
     # Logic to calculate and display leaderboard
-    return render_template('leaderboard.html', users=leaderboard_data)
+    return render_template('leaderboard.html' ) #users=leaderboard_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

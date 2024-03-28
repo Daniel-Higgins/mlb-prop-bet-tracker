@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Bet</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-5">Place Your Bet</h2>
+        <form action="/submit_bet" method="post" class="mt-3">
+            <div class="form-group">
+                <label for="user">Select User:</label>
+                <select class="form-control" id="user" name="user">
+                    <!-- Sample users, replace or populate with dynamic data -->
+                    <option value="user1">Higgins</option>
+                    <option value="user2">Volz</option>
+                    <option value="user2">Eddie</option>
+                    <option value="user2">Mark</option>
+                    <option value="user2">Danny D</option>
+                    <!-- Add more users as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="betType">Type of Bet:</label>
+                <select class="form-control" id="betType" name="betType">
+                    <!-- Sample bet types, replace or populate with dynamic data -->
+                    <option value="type1">To get a Hit</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="odds">Odds:</label>
+                <input type="text" class="form-control" id="odds" name="odds" placeholder="Enter odds">
+            </div>
+            <div class="form-group">
+                <label for="book">Select Book:</label>
+                <select class="form-control" id="book" name="book">
+                    <!-- Sample books, replace or populate with dynamic data -->
+                    <option value="book1">DraftKings</option>
+                    <option value="book2">Fanduel</option>
+                    <option value="book1">BetMGM</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
