@@ -1,8 +1,14 @@
-body {
-    font-family: Arial, sans-serif;
+html, body {
+    height: 100%;
     margin: 0;
-    padding: 0;
 }
+
+#header, #footer {
+    width: 100%;
+    position: fixed; /* Only needed for the header */
+    left: 0; /* Ensures alignment to the viewport edges */
+}
+
 #header {
     width: 100%;
     background-color: #333;
@@ -22,19 +28,9 @@ body {
 #header a:hover {
     background-color: #555; /* Simple hover effect */
 }
-
-#main-container {
-    display: flex;
-    flex-direction: row;
-}
-
-#middle-column {
-    width: 100%;
-    background-color: rgba(173, 216, 230, 0.5); /* Light blue with 50% opacity */
-    overflow-y: auto;
-    padding: 10px;
-}
 #footer {
+    bottom: 0; /* Aligns the footer to the bottom */
+    position: fixed; /* Optional: only if you want the footer fixed as well */
     background-color: #333;
     color: white;
     text-align: center;
@@ -42,21 +38,23 @@ body {
     display: flex;
     justify-content: center;
     gap: 30px; /* Adds space between the links */
-    position: relative; /* Ensures the footer is at the bottom */
     bottom: 0;
     width: 100%;
 }
 
-#footer a {
-    color: white;
-    text-decoration: none;
-    padding: 5px 10px;
+.content-wrapper {
+    margin-top: 60px; /* Add top margin to .content-wrapper equal to header's height */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
 }
 
-#footer a:hover {
-    background-color: #555; /* Simple hover effect */
-}
-
-#right-column{
-    padding-right: 0
+.container {
+    flex: 1;
+    padding: 0 20px; /* Adds 20px padding on the left and right */
 }
