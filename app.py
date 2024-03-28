@@ -22,6 +22,7 @@ def pending_bets():
     # Logic to fetch and display pending bets
     return render_template('pending_bets.html', bets=pending_bets)
 
+
 @app.route('/leaderboard')
 def leaderboard():
     # Logic to calculate and display leaderboard
