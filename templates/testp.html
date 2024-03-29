@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="form-group">
+        <label for="player">Player:</label>
+        <select class="form-control" id="player" name="player">
+            <option value="">Select a player</option>
+            {% for player in players %}
+            <option value="{{ player.PlayerID }}">{{ player.FirstName }} {{ player.LastName }} - {{ player.Team }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <script>
+             function matchStart(params, data) {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === '') {
+                  return data;
+                }
+
+                // Skip if there is no 'text' to compare
+                if (typeof data.text === 'undefined') {
+                  return null;
+                }
+
+                // Check if the data begins with the search term
+                if (data.text.toUpperCase().startsWith(params.term.toUpperCase())) {
+                  return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
+            }
+
+            $("#player").select2({
+                matcher: matchStart,
+                placeholder: "Select a player",
+                allowClear: true,
+                width: '100%'
+            });
+
+    </script>
+</body>
+</html>

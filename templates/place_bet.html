@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Bet</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
 
@@ -18,6 +21,15 @@
     </div>
 
     <div class="container-wrapper">
+        <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+        </div>
         <div class="row">
             <!-- Bet Form Column -->
             <div class="col-md-7">
@@ -26,22 +38,27 @@
                     <div class="form-group">
                         <label for="user">Select User:</label>
                         <select class="form-control" id="user" name="user">
-                            <option value="user1">Higgins</option>
-                            <option value="user2">Volz</option>
-                            <option value="user3">Eddie</option>
-                            <option value="user4">Mark</option>
-                            <option value="user5">Danny D</option>
+                            <option value="Higgins">Higgins</option>
+                            <option value="Volz">Volz</option>
+                            <option value="Eddie">Eddie</option>
+                            <option value="Mark">Mark</option>
+                            <option value="Danny D">Danny D</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="betType">Type of Bet:</label>
                         <select class="form-control" id="betType" name="betType">
-                            <option value="type1">To get a Hit</option>
+                            <option value="To get a Hit">To get a Hit</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="Player">Player:</label>
-                        <input type="text" class="form-control" id="player" name="player" placeholder="Enter Player">
+                        <label for="player">Player:</label>
+                        <select class="form-control" id="player" name="player">
+                            <option value="">Select a player</option>
+                            {% for player in players %}
+                            <option value="{{ player.FirstName }} {{ player.LastName }} - {{ player.Team }}">{{ player.FirstName }} {{ player.LastName }} - {{ player.Team }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="odds">Odds:</label>
@@ -50,9 +67,9 @@
                     <div class="form-group">
                         <label for="book">Select Book:</label>
                         <select class="form-control" id="book" name="book">
-                            <option value="book1">DraftKings</option>
-                            <option value="book2">Fanduel</option>
-                            <option value="book3">BetMGM</option>
+                            <option value="DraftKings">DraftKings</option>
+                            <option value="Fanduel">Fanduel</option>
+                            <option value="BetMGM">BetMGM</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -78,8 +95,7 @@
         <a href="#">Contact Us</a>
         <a href="#">Careers</a>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="/static/custom-select2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

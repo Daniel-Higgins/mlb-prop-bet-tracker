@@ -17,6 +17,7 @@ html, body {
     padding: 10px 0;
     display: flex;
     justify-content: space-around; /* Distribute space evenly around the links */
+    z-index: 100;
 }
 
 #header a {
@@ -43,7 +44,7 @@ html, body {
 }
 
 .content-wrapper {
-    margin-top: 60px; /* Add top margin to .content-wrapper equal to header's height */
+    margin-top: 70px; /* Add top margin to .content-wrapper equal to header's height */
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -60,6 +61,17 @@ body {
 }
 
 .row{
-    padding: 79px !important; /* Override padding for .row */
+    padding: 80px !important; /* Override padding for .row */
 
+}
+.alert{
+    color: red;
+}
+.flash-messages {
+    margin-top: 60px; /* Adjust this value based on the height of your header */
+    z-index: 101;
+}
+.table-responsive {
+    margin: 0 auto; /* Centers the table */
+    max-width: 60%; /* Limits the table width with some padding on the sides */
 }

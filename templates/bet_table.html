@@ -1,0 +1,35 @@
+{% if bets %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Select</th>  <!-- Additional header for radio buttons -->
+                    <th>Who Placed</th>
+                    <th>Player Bet On</th>
+                    <th>Odds</th>
+                    <th>Book</th>
+                    <th>Date Placed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bet in bets %}
+                    <tr>
+                        <td><input type="radio" name="selected_bet" value="{{ bet['BetID'] }}"></td>
+                        <td>{{ bet['WhoMadeTheBet'] }}</td>
+                        <td>{{ bet['TypeOfBet'] }}</td>
+                        <td>{{ bet['PlayerBetOn'] }}</td>
+                        <td>{{ bet['Odds'] }}</td>
+                        <td>{{ bet['Book'] }}</td>
+                        <td>{{ bet['TimeDatePlaced'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <button type="button" id="yes-button" class="btn btn-success">Yes</button>
+        <button type="button" id="no-button" class="btn btn-danger">No</button>
+    </div>
+{% else %}
+    <p class="text-center">No bets placed.</p>
+{% endif %}
