@@ -47,7 +47,7 @@ def submit_bet():
                 'WhoMadeTheBet': request.form.get('user'),
                 'TypeOfBet': request.form.get('betType'),
                 'PlayerBetOn': request.form.get('player'),
-                'Odds': str(odds),  # Storing as a string for consistency
+                'Odds': odds,  # Storing as a string for consistency
                 'Book': request.form.get('book'),
                 'TimeDatePlaced': now
             }

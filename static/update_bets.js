@@ -8,7 +8,8 @@ $(document).ready(function() {
             data: $("#bet-outcome-form").serialize(),
             success: function(data) {
                 // Refresh the table content
-                $(".container-wrapper").html(data);
+                var newTbody = $("<table>").html(data).find("tbody");
+                $(".table-responsive .table tbody").replaceWith(newTbody);
             }
         });
     }

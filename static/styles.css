@@ -41,6 +41,7 @@ html, body {
     gap: 30px; /* Adds space between the links */
     bottom: 0;
     width: 100%;
+    z-index: 1;
 }
 
 .content-wrapper {
@@ -49,6 +50,9 @@ html, body {
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-bottom: 100px;
+    max-height: calc(100vh - 150px); /* Adjust based on header and footer height */
+    overflow-y: auto;
 }
 body {
     display: flex;
@@ -67,11 +71,16 @@ body {
 .alert{
     color: red;
 }
+
 .flash-messages {
     margin-top: 60px; /* Adjust this value based on the height of your header */
     z-index: 101;
 }
-.table-responsive {
+.table-responsive .table{
     margin: 0 auto; /* Centers the table */
-    max-width: 60%; /* Limits the table width with some padding on the sides */
+    max-width: 60%;
+    min-width: 59%/* Limits the table width with some padding on the sides */
+}
+.button-container {
+    z-index: 2;  /* Higher z-index */
 }

@@ -1,32 +1,38 @@
 {% if bets %}
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Select</th>  <!-- Additional header for radio buttons -->
-                    <th>Who Placed</th>
-                    <th>Player Bet On</th>
-                    <th>Odds</th>
-                    <th>Book</th>
-                    <th>Date Placed</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for bet in bets %}
+    <form id="bet-outcome-form" action="/bet_outcome" method="post">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td><input type="radio" name="selected_bet" value="{{ bet['BetID'] }}"></td>
-                        <td>{{ bet['WhoMadeTheBet'] }}</td>
-                        <td>{{ bet['TypeOfBet'] }}</td>
-                        <td>{{ bet['PlayerBetOn'] }}</td>
-                        <td>{{ bet['Odds'] }}</td>
-                        <td>{{ bet['Book'] }}</td>
-                        <td>{{ bet['TimeDatePlaced'] }}</td>
+                        <th>Select</th>  <!-- Additional header for radio buttons -->
+                        <th>Who Placed</th>
+                        <th>Type of Bet</th>
+                        <th>Player Bet On</th>
+                        <th>Odds</th>
+                        <th>Book</th>
+                        <th>Date Placed</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="text-center">
+                </thead>
+                <tbody>
+                    {% for bet in bets %}
+                        <tr>
+                            <td><input type="radio" name="selected_bet" value="{{ bet['bet_id'] }}"></td>
+                            <td>{{ bet['WhoMadeTheBet'] }}</td>
+                            <td>{{ bet['TypeOfBet'] }}</td>
+                            <td>{{ bet['PlayerBetOn'] }}</td>
+                            <td>{{ bet['Odds'] }}</td>
+                            <td>{{ bet['Book'] }}</td>
+                            <td>{{ bet['TimeDatePlaced'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <input type="hidden" name="bet_outcome" id="bet-outcome" value="">
+    </form>
+    <br>
+    <p class="text-center">Did the bet hit ?</p>
+    <div class="text-center button-container">
         <button type="button" id="yes-button" class="btn btn-success">Yes</button>
         <button type="button" id="no-button" class="btn btn-danger">No</button>
     </div>
