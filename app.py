@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
-
-from flask import Flask, request, render_template, redirect, flash, url_for
+from leaderboard import do_this
+from flask import Flask, request, render_template, redirect, flash, url_for, jsonify
 from getPlayers import *
 import boto3
 
@@ -79,22 +79,27 @@ def bet_outcome():
     outcome = request.form.get('bet_outcome')
 
     try:
-        if outcome == "yes":
+        response = table.get_item(
+            Key={
+                'bet_id': bet_id
+            }
+        )
+        bet_item = response.get('Item', {})
+
+        if bet_item:
+            # Add the outcome to the bet item
+            bet_item['Outcome'] = outcome
+
+            # Insert the bet item into the history table
+            history_table = dynamodb.Table('history-stats')
+            history_table.put_item(Item=bet_item)
+
+            # Delete the bet item from the pending-wagers table
             table.delete_item(
                 Key={
                     'bet_id': bet_id
                 }
             )
-
-            ### DO MATH FOR LEADERBOARD
-        elif outcome == "no":
-            table.delete_item(
-                Key={
-                    'bet_id': bet_id
-                }
-            )
-
-            ### DO MATH FOR LEADERBOARD
 
         response = table.scan()  # Scans the entire table, use with caution for larger datasets
         bets = response.get('Items', [])
@@ -106,12 +111,28 @@ def bet_outcome():
     return render_template('bet_table.html', bets=bets)
 
 
+@app.route('/leaderboard_data')
+def leaderboard_data():
+    # Convert the aggregated data to a list of dictionaries.
+    final_data = [
+        {
+            'bettorName': user,
+            'numberOfBets': data['numberOfBets'],
+            'wins': data['wins'],
+            'losses': data['losses'],
+            'mostBetPlayer': data['mostBetPlayer'],
+            'avgOdds': data['avgOdds'],
+            'mostUsedBook': data['mostUsedBook']
+        } for user, data in do_this().items()
+    ]
+
+    return jsonify(final_data)
+
+
 @app.route('/leaderboard')
 def leaderboard():
-    # Logic to calculate and display leaderboard
-    # Add logic to fetch and calculate leaderboard data.
-    leaderboard_data = []  # Replace with actual data
-    return render_template('leaderboard.html', users=leaderboard_data)
+    return render_template('leaderboard_data.html')
+
 
 @app.route('/test')
 def testp():
