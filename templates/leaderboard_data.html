@@ -18,22 +18,26 @@
         <a href="/account">Account</a>
     </div>
     <br><br><br>
-    <table id="leaderboardTable" class="table">
-        <thead>
-            <tr>
-                <th onclick="sortTable(0)">Bettor Name</th>
-                <th onclick="sortTable(1)">Number of Bets</th>
-                <th onclick="sortTable(2)">Wins</th>
-                <th onclick="sortTable(3)">Losses</th>
-                <th onclick="sortTable(4)">Most Bet Player</th>
-                <th onclick="sortTable(5)">Avg Odds</th>
-                <th onclick="sortTable(6)">Most Used Book</th>
-            </tr>
-        </thead>
-        <tbody>
-        <!-- Data will be populated here -->
-        </tbody>
-    </table>
+
+    <div class="container-wrapper ">
+        <table id="leaderboardTable" class="table">
+            <p class="text-center">LEADERBOARD</p>
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Bettor Name</th>
+                    <th onclick="sortTable(1)">Number of Bets</th>
+                    <th onclick="sortTable(2)">Wins</th>
+                    <th onclick="sortTable(3)">Losses</th>
+                    <th onclick="sortTable(4)">Most Bet Player</th>
+                    <th onclick="sortTable(5)">Avg Odds</th>
+                    <th onclick="sortTable(6)">Most Used Book</th>
+                </tr>
+            </thead>
+            <tbody>
+            <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/static/leaderboard.js"></script>
