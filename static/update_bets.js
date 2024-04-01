@@ -22,3 +22,11 @@ $(document).ready(function() {
         submitBetOutcome("no");
     });
 });
+
+$(document).ready(function() {
+    $("td[data-utc-time]").each(function() {
+        var utcTime = $(this).attr("data-utc-time");
+        var localTime = new Date(utcTime + ' UTC').toLocaleString();
+        $(this).text(localTime);
+    });
+});

@@ -11,14 +11,14 @@ $(document).ready(function() {
     });
 
     // Function to fetch and display a player's betting history
-    // Function to fetch and display a player's betting history
     function fetchPlayerHistory(player) {
         $.getJSON(`/player_history/${player}`, function(data) {
             var tableBody = $('#playerHistoryTable tbody');
             tableBody.empty(); // Clear existing data
             data.forEach(function(bet) {
+                var localDate = new Date(bet.datePlaced + ' UTC'); // Convert UTC to local date
                 var newRow = `<tr>
-                                <td>${bet.datePlaced}</td>
+                                <td>${localDate.toLocaleString()}</td> <!-- Display as local time -->
                                 <td>${bet.outcome}</td>
                                 <td>${bet.typeOfBet}</td>
                                 <td>${bet.playerBetOn}</td>
@@ -30,7 +30,6 @@ $(document).ready(function() {
         });
     }
 
-
     // Event handler for player selection
     $('#playerSelect').change(function() {
         var selectedPlayer = $(this).val();
@@ -41,3 +40,4 @@ $(document).ready(function() {
         }
     });
 });
+

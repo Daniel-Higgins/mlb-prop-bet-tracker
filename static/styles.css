@@ -100,4 +100,12 @@ body {
 #playerHistoryTable {
     padding: 20px;  /* Adjust the padding value as needed */
 }
+#version-info {
+    position: fixed;
+    left: 0;
+    bottom: 0;  /* Change the background color as needed */
+    color: grey;  /* Change the text color as needed */
+    padding: 5px;
+    font-size: small;
+}
 

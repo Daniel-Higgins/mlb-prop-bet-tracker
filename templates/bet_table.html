@@ -22,7 +22,7 @@
                             <td>{{ bet['PlayerBetOn'] }}</td>
                             <td>{{ bet['Odds'] }}</td>
                             <td>{{ bet['Book'] }}</td>
-                            <td>{{ bet['TimeDatePlaced'] }}</td>
+                            <td data-utc-time="{{ bet['TimeDatePlaced'] }}"></td>
                         </tr>
                     {% endfor %}
                 </tbody>

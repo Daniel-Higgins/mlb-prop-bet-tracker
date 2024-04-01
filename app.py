@@ -1,5 +1,6 @@
 from datetime import datetime
 from uuid import uuid4
+import pytz
 from leaderboard import do_this
 from flask import Flask, request, render_template, redirect, flash, url_for, jsonify
 from getPlayers import *
@@ -60,6 +61,14 @@ def submit_bet():
     except ValueError:
         flash('Invalid format for odds. Please enter a number.', 'error')
         return redirect(url_for('place_bet'))
+
+
+
+def convert_utc_to_local(utc_time_str, user_timezone):
+    utc_time = datetime.strptime(utc_time_str, "%Y-%m-%d %H:%M:%S")
+    utc_time = utc_time.replace(tzinfo=pytz.utc)
+    local_time = utc_time.astimezone(pytz.timezone(user_timezone))
+    return local_time.strftime("%Y-%m-%d %H:%M:%S")
 
 
 @app.route('/pending_bets')
