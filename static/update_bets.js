@@ -1,4 +1,3 @@
-// update_bets.js
 $(document).ready(function() {
     function submitBetOutcome(outcome) {
         $("#bet-outcome").val(outcome);
@@ -10,6 +9,7 @@ $(document).ready(function() {
                 // Refresh the table content
                 var newTbody = $("<table>").html(data).find("tbody");
                 $(".table-responsive .table tbody").replaceWith(newTbody);
+                calculateParlayOdds(); // Recalculate parlay odds after table update
             }
         });
     }
@@ -29,4 +29,38 @@ $(document).ready(function() {
         var localTime = new Date(utcTime + ' UTC').toLocaleString();
         $(this).text(localTime);
     });
+
+    // Initialize parlay odds calculation
+    calculateParlayOdds();
 });
+
+function calculateParlayOdds() {
+    let odds = [];
+    $("#bet-outcome-form .table tbody tr").each(function() {
+        const oddsValue = $(this).find('td:eq(4)').text(); // Assuming the 5th column contains the odds
+        odds.push(parseInt(oddsValue));
+    });
+
+    if (odds.length < 2) {
+        $("#parlay-odds-value").text("Need at least 2 bets for a parlay");
+        return;
+    }
+
+    let decimal = 1;
+    odds.forEach(function(odd) {
+        decimal *= convertD(odd);
+    });
+
+    decimal = (decimal * 100) - 100;
+    $("#parlay-odds-value").text(Math.floor(decimal));
+}
+
+function convertD(a) {
+    let dec = 0.0;
+    if (a > 0) {
+        dec = (a / 100) + 1;
+    } else {
+        dec = 1 - (100 / a);
+    }
+    return dec;
+}
