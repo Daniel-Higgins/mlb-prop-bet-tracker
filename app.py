@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['VERSION_INFO'] = 'V1.0.6'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
-session = boto3.Session(aws_access_key_id="AKIATCKANQTKSIM4LEMR", aws_secret_access_key="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")
+session = boto3.Session()
 dynamodb = session.resource('dynamodb', region_name="us-east-1")
 table = dynamodb.Table('pending-wagers')
 
@@ -36,7 +36,7 @@ def submit_bet():
         if odds < -300:
             flash('Odds must be greater than -300.', 'error')
             return redirect(url_for('place_bet'))
-        elif (odds > -99 and odds < 99) or odds > 10000:
+        elif (-99 < odds < 99) or odds > 10000:
             flash('Enter Valid Odds.', 'error')
             return redirect(url_for('place_bet'))
 
