@@ -3,6 +3,7 @@ from uuid import uuid4
 from leaderboard import do_this
 from flask import Flask, request, render_template, redirect, flash, url_for, jsonify
 from getPlayers import *
+from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
@@ -113,6 +114,7 @@ def bet_outcome():
 
 @app.route('/leaderboard_data')
 def leaderboard_data():
+
     # Convert the aggregated data to a list of dictionaries.
     final_data = [
         {
@@ -121,7 +123,7 @@ def leaderboard_data():
             'wins': data['wins'],
             'losses': data['losses'],
             'mostBetPlayer': data['mostBetPlayer'],
-            'avgOdds': data['avgOdds'],
+            'avgOdds': data['avgOdds'] if data['avgOdds'] < -99 or data['avgOdds'] > 99 else int(-100),
             'mostUsedBook': data['mostUsedBook']
         } for user, data in do_this().items()
     ]
@@ -133,6 +135,30 @@ def leaderboard_data():
 def leaderboard():
     return render_template('leaderboard_data.html')
 
+
+@app.route('/player_history/<player>')
+def player_history(player):
+    table2 = dynamodb.Table('history-stats')
+    # Assuming 'PlayerBetOn' is the attribute you want to filter by in your DynamoDB table
+    response = table2.scan(
+        FilterExpression=Attr('WhoMadeTheBet').eq(player)
+    )
+
+    bets = response['Items']
+
+    # Transform the bets to your desired format if needed
+    player_history_data = [
+        {
+            'datePlaced': bet.get('TimeDatePlaced', 'N/A'),
+            'outcome': bet.get('Outcome', 'N/A'),
+            'typeOfBet': bet.get('TypeOfBet', 'N/A'),
+            'playerBetOn': bet['PlayerBetOn'],
+            'odds': bet.get('Odds', 'N/A'),
+            'book': bet.get('Book', 'N/A'),
+        } for bet in bets
+    ]
+
+    return jsonify(player_history_data)
 
 @app.route('/test')
 def testp():

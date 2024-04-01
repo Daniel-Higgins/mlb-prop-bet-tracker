@@ -38,9 +38,39 @@
             </tbody>
         </table>
     </div>
+    <!-- Inside your <body> tag, after the leaderboard table -->
+    <div class="container-wrapper player-history-wrapper">
+        <div class="player-selection">
+            <label for="playerSelect">Select Player:</label>
+            <select id="playerSelect" class="form-control">
+                <option value="">Select a player</option>
+                <!-- Dynamically populate this list -->
+            </select>
+        </div>
+
+        <table id="playerHistoryTable" class="table mt-4">
+            <caption class="text-center">Player Betting History</caption>
+            <thead>
+                <tr>
+                    <th>Date Placed</th>
+                    <th>Outcome</th>
+                    <th>Type of Bet</th>
+                    <th>Player Bet On</th>
+                    <th>Odds</th>
+                    <th>Book</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
+
+    </div>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/static/leaderboard.js"></script>
+    <script src="/static/leaderboard-history.js"></script>
     <script src="/static/sort-table.js"></script>
 
 </body>
