@@ -8,6 +8,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
+app.config['VERSION_INFO'] = 'V1.0.6'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 session = boto3.Session(aws_access_key_id="AKIATCKANQTKSIM4LEMR", aws_secret_access_key="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")
@@ -19,7 +20,7 @@ table = dynamodb.Table('pending-wagers')
 def place_bet():
     mlb_players = fetch_mlb_players()
     # Render the place bet HTML page
-    return render_template('place_bet.html', players=mlb_players)
+    return render_template('place_bet.html', players=mlb_players, version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/submit_bet', methods=['POST'])
@@ -80,7 +81,7 @@ def pending_bets():
         print(f"Error fetching pending bets: {e}")
         bets = []
 
-    return render_template('pending_bets.html', bets=bets)
+    return render_template('pending_bets.html', bets=bets, version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/bet_outcome', methods=['POST'])
@@ -142,7 +143,7 @@ def leaderboard_data():
 
 @app.route('/leaderboard')
 def leaderboard():
-    return render_template('leaderboard_data.html')
+    return render_template('leaderboard_data.html', version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/player_history/<player>')
@@ -173,7 +174,7 @@ def player_history(player):
 def testp():
     mlb_players = fetch_mlb_players()
     # Render the place bet HTML page
-    return render_template('testp.html', players=mlb_players)
+    return render_template('testp.html', players=mlb_players, version_info=app.config['VERSION_INFO'])
 
 if __name__ == '__main__':
     app.run(debug=True)
