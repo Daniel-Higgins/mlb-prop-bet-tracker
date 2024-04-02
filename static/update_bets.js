@@ -51,21 +51,34 @@ function calculateParlayOdds() {
         decimal *= convertD(odd);
     });
 
-    decimal = (decimal * 100) - 100;
-    let parlayOdds = Math.floor(decimal);
-    $("#parlay-odds-value").text(parlayOdds);
+    // Convert combined decimal odds back to American for display and round it
+    let americanOdds = roundAmerican(convertToAmerican(decimal));
 
-    // Calculate the win amount for a $20 bet
-    let winAmount = (parlayOdds / 100) * 20;
+    // Calculate the win amount for a $20 bet using the combined decimal odds
+    let winAmount = (decimal - 1) * 20;  // Adjusted to calculate profit only
+    $("#parlay-odds-value").text(americanOdds);  // Display the rounded American odds
     $("#win-amount").text(winAmount.toFixed(2));  // Update the win amount text
 }
 
 function convertD(a) {
-    let dec = 0.0;
+    // Convert American odds to decimal odds
     if (a > 0) {
-        dec = (a / 100) + 1;
+        return (a / 100) + 1;
     } else {
-        dec = 1 - (100 / a);
+        return (100 / Math.abs(a)) + 1;
     }
-    return dec;
+}
+
+function convertToAmerican(decimal) {
+    // Convert decimal odds back to American odds
+    if (decimal >= 2) {
+        return (decimal - 1) * 100;
+    } else {
+        return -100 / (decimal - 1);
+    }
+}
+
+function roundAmerican(americanOdds) {
+    // Round American odds towards zero
+    return americanOdds > 0 ? Math.floor(americanOdds) : Math.ceil(americanOdds);
 }

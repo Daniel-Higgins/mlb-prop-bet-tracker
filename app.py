@@ -9,7 +9,7 @@ import boto3
 
 
 app = Flask(__name__)
-app.config['VERSION_INFO'] = 'V1.0.9'
+app.config['VERSION_INFO'] = 'V1.0.91'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 session = boto3.Session()
