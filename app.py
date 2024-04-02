@@ -149,7 +149,6 @@ def leaderboard():
 @app.route('/player_history/<player>')
 def player_history(player):
     table2 = dynamodb.Table('history-stats')
-    # Assuming 'PlayerBetOn' is the attribute you want to filter by in your DynamoDB table
     response = table2.scan(
         FilterExpression=Attr('WhoMadeTheBet').eq(player)
     )
@@ -167,6 +166,9 @@ def player_history(player):
             'book': bet.get('Book', 'N/A'),
         } for bet in bets
     ]
+
+    # Reverse the order of bets to display the most recent first
+    player_history_data = player_history_data[::-1]
 
     return jsonify(player_history_data)
 

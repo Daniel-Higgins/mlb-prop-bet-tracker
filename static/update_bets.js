@@ -21,6 +21,8 @@ $(document).ready(function() {
     $("#no-button").click(function() {
         submitBetOutcome("no");
     });
+
+    calculateParlayOdds(); // Initial calculation on page load
 });
 
 $(document).ready(function() {
@@ -29,9 +31,6 @@ $(document).ready(function() {
         var localTime = new Date(utcTime + ' UTC').toLocaleString();
         $(this).text(localTime);
     });
-
-    // Initialize parlay odds calculation
-    calculateParlayOdds();
 });
 
 function calculateParlayOdds() {
@@ -43,6 +42,7 @@ function calculateParlayOdds() {
 
     if (odds.length < 2) {
         $("#parlay-odds-value").text("Need at least 2 bets for a parlay");
+        $("#win-amount").text("N/A");  // Update the win amount text
         return;
     }
 
@@ -52,7 +52,12 @@ function calculateParlayOdds() {
     });
 
     decimal = (decimal * 100) - 100;
-    $("#parlay-odds-value").text(Math.floor(decimal));
+    let parlayOdds = Math.floor(decimal);
+    $("#parlay-odds-value").text(parlayOdds);
+
+    // Calculate the win amount for a $20 bet
+    let winAmount = (parlayOdds / 100) * 20;
+    $("#win-amount").text(winAmount.toFixed(2));  // Update the win amount text
 }
 
 function convertD(a) {

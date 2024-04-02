@@ -1,8 +1,7 @@
 from collections import defaultdict
 import boto3
 
-session = boto3.Session(aws_access_key_id="AKIATCKANQTKSIM4LEMR",
-                        aws_secret_access_key="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")
+session = boto3.Session()
 
 
 def do_this():
