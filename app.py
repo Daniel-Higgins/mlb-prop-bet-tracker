@@ -132,6 +132,7 @@ def leaderboard_data():
             'numberOfBets': data['numberOfBets'],
             'wins': data['wins'],
             'losses': data['losses'],
+            'winStreak': data['winStreak'],
             'mostBetPlayer': data['mostBetPlayer'],
             'avgOdds': data['avgOdds'] if data['avgOdds'] < -99 or data['avgOdds'] > 99 else int(-100),
             'mostUsedBook': data['mostUsedBook']
