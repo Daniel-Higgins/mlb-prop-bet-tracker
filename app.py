@@ -25,8 +25,20 @@ def place_bet():
 
 @app.route('/submit_bet', methods=['POST'])
 def submit_bet():
+    bettor = request.form.get('user')
+
+    # Check for existing pending bets for the bettor
+    response = table.scan(
+        FilterExpression=Attr('WhoMadeTheBet').eq(bettor) & Attr('Outcome').not_exists()
+    )
+
+    if response['Items']:
+        # There's already a pending bet for this bettor
+        flash('You already have a pending bet.', 'error')
+        return redirect(url_for('place_bet'))
+
     # Validate form data
-    if not all([request.form.get('user'), request.form.get('betType'), request.form.get('player'),
+    if not all([bettor, request.form.get('betType'), request.form.get('player'),
                 request.form.get('odds'), request.form.get('book')]):
         flash('All fields are required!', 'error')
         return redirect(url_for('place_bet'))
@@ -48,16 +60,15 @@ def submit_bet():
         table.put_item(
             Item={
                 'bet_id': bet_id,
-                'WhoMadeTheBet': request.form.get('user'),
+                'WhoMadeTheBet': bettor,
                 'TypeOfBet': request.form.get('betType'),
                 'PlayerBetOn': request.form.get('player'),
-                'Odds': odds,  # Storing as a string for consistency
+                'Odds': odds,
                 'Book': request.form.get('book'),
                 'TimeDatePlaced': now
             }
         )
         flash('Bet placed successfully!', 'success')
-        # Redirect to the pending bets page
         return redirect(url_for('pending_bets'))
 
     except ValueError:
