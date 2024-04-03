@@ -9,7 +9,8 @@ $(document).ready(function() {
                             <td>${row.numberOfBets}</td>
                             <td>${row.wins}</td>
                             <td>${row.losses}</td>
-                            <td>${row.winStreak}</td> <!-- Display win streak -->
+                            <td>${row.currentStreak}</td> <!-- Current streak -->
+                            <td>${row.longestStreak}</td> <!-- Longest streak -->
                             <td>${row.mostBetPlayer}</td>
                             <td>${row.avgOdds.toFixed(2)}</td>
                             <td>${row.mostUsedBook}</td>
@@ -18,5 +19,3 @@ $(document).ready(function() {
         });
     });
 });
-
-

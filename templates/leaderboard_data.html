@@ -16,24 +16,26 @@
         <a href="/pending_bets">Pending Bets</a>
         <a href="/leaderboard">Leaderboard</a>
         <a href="/account">Account</a>
+        <a href="/games">Games</a>
     </div>
     <br><br><br>
 
     <div class="container-wrapper ">
         <table id="leaderboardTable" class="table">
             <p class="text-center">LEADERBOARD</p>
-            <thead>
-                <tr>
-                    <th onclick="sortTable(0)">Bettor Name</th>
-                    <th onclick="sortTable(1)">Number of Bets</th>
-                    <th onclick="sortTable(2)">Wins</th>
-                    <th onclick="sortTable(3)">Losses</th>
-                    <th onclick="sortTable(4)">Streak</th>
-                    <th onclick="sortTable(5)">Most Bet Player</th>
-                    <th onclick="sortTable(6)">Avg Odds</th>
-                    <th onclick="sortTable(7)">Most Used Book</th>
-                </tr>
-            </thead>
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Bettor Name</th>
+                        <th onclick="sortTable(1)">Number of Bets</th>
+                        <th onclick="sortTable(2)">Wins</th>
+                        <th onclick="sortTable(3)">Losses</th>
+                        <th onclick="sortTable(4)">Current Streak</th>
+                        <th onclick="sortTable(5)">Longest Streak</th> <!-- New column for longest streak -->
+                        <th onclick="sortTable(6)">Most Bet Player</th>
+                        <th onclick="sortTable(7)">Avg Odds</th>
+                        <th onclick="sortTable(8)">Most Used Book</th>
+                    </tr>
+                </thead>
             <tbody>
             <!-- Data will be populated here -->
             </tbody>

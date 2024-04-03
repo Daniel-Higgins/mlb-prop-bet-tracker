@@ -7,7 +7,6 @@ from getPlayers import *
 from boto3.dynamodb.conditions import Attr
 import boto3
 
-
 app = Flask(__name__)
 app.config['VERSION_INFO'] = 'V1.0.91'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
@@ -27,7 +26,8 @@ def place_bet():
 @app.route('/submit_bet', methods=['POST'])
 def submit_bet():
     # Validate form data
-    if not all([request.form.get('user'), request.form.get('betType'), request.form.get('player'), request.form.get('odds'), request.form.get('book')]):
+    if not all([request.form.get('user'), request.form.get('betType'), request.form.get('player'),
+                request.form.get('odds'), request.form.get('book')]):
         flash('All fields are required!', 'error')
         return redirect(url_for('place_bet'))
 
@@ -63,7 +63,6 @@ def submit_bet():
     except ValueError:
         flash('Invalid format for odds. Please enter a number.', 'error')
         return redirect(url_for('place_bet'))
-
 
 
 def convert_utc_to_local(utc_time_str, user_timezone):
@@ -125,21 +124,20 @@ def bet_outcome():
 
 @app.route('/leaderboard_data')
 def leaderboard_data():
-
-    # Convert the aggregated data to a list of dictionaries.
+    data = do_this()
     final_data = [
         {
             'bettorName': user,
-            'numberOfBets': data['numberOfBets'],
-            'wins': data['wins'],
-            'losses': data['losses'],
-            'winStreak': data['winStreak'],
-            'mostBetPlayer': data['mostBetPlayer'],
-            'avgOdds': data['avgOdds'] if data['avgOdds'] < -99 or data['avgOdds'] > 99 else int(-100),
-            'mostUsedBook': data['mostUsedBook']
-        } for user, data in do_this().items()
+            'numberOfBets': stats['numberOfBets'],
+            'wins': stats['wins'],
+            'losses': stats['losses'],
+            'currentStreak': stats['currentStreak'],
+            'longestStreak': stats['longestStreak'],
+            'mostBetPlayer': stats['mostBetPlayer'],
+            'avgOdds': round(stats['avgOdds'], 2) if stats['numberOfBets'] > 0 else 0,
+            'mostUsedBook': stats['mostUsedBook']
+        } for user, stats in data.items()
     ]
-
     return jsonify(final_data)
 
 
@@ -169,10 +167,25 @@ def player_history(player):
         } for bet in bets
     ]
 
-    # Reverse the order of bets to display the most recent first
-    player_history_data = player_history_data[::-1]
-
     return jsonify(player_history_data)
+
+
+@app.route('/aboutus')
+def aboutus():
+    return render_template('aboutus.html', version_info=app.config['VERSION_INFO'])
+
+
+@app.route('/contactus')
+def contactus():
+    return render_template('contactus.html', version_info=app.config['VERSION_INFO'])
+
+
+# @app.route('/games')
+# def get_mlb_players():
+#   players = fetch_mlb_players()
+#  # Only send necessary data to the frontend
+# return render_template('games.html', players=players, version_info=app.config['VERSION_INFO'])
+
 
 @app.route('/test')
 def testp():
@@ -180,6 +193,6 @@ def testp():
     # Render the place bet HTML page
     return render_template('testp.html', players=mlb_players, version_info=app.config['VERSION_INFO'])
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-
