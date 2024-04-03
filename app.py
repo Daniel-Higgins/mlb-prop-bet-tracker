@@ -8,7 +8,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
-app.config['VERSION_INFO'] = 'V1.0.91'
+app.config['VERSION_INFO'] = 'V1.1.0'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 session = boto3.Session()
