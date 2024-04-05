@@ -13,3 +13,7 @@ def fetch_mlb_players():
     else:
         print(f"Failed to retrieve data: {response.status_code}")
         return []
+
+
+
+def get_games_for_today():

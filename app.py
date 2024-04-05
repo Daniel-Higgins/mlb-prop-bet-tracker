@@ -191,11 +191,18 @@ def contactus():
     return render_template('contactus.html', version_info=app.config['VERSION_INFO'])
 
 
-# @app.route('/games')
-# def get_mlb_players():
-#   players = fetch_mlb_players()
-#  # Only send necessary data to the frontend
-# return render_template('games.html', players=players, version_info=app.config['VERSION_INFO'])
+@app.route('/games', methods=['GET'])
+def games():
+    games = get_games_for_today()  # This should now include spread and odds
+    return render_template('games.html', games=games)
+
+
+# to edit
+@app.route('/submit_winners', methods=['POST'])
+def submit_winners():
+    selected_winners = request.form.to_dict()
+    print(selected_winners)  # Here you would process the selections and store them in DynamoDB
+    return redirect(url_for('select_winners'))  # Redirect back or to another page as needed
 
 
 @app.route('/test')

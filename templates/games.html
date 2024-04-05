@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Game Winners</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="header">
+        <a href="/">Place Bets</a>
+        <a href="/pending_bets">Pending Bets</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/account">Account</a>
+    </div>
+
+
+    <div class="container mt-5">
+        <h2>Select Winners for Today's Games</h2>
+        <form id="winnerSelectionForm" method="post" action="/submit_winners">
+            {% for game in games %}
+            <div class="game">
+                <h5>{{ game['HomeTeam'] }} ({{ game['HomeTeamSpread'] }}, {{ game['HomeTeamOdds'] }}) vs
+                    {{ game['AwayTeam'] }} ({{ game['AwayTeamSpread'] }}, {{ game['AwayTeamOdds'] }})</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="winner_{{ game['GameID'] }}" value="{{ game['HomeTeam'] }}" id="homeTeam_{{ game['GameID'] }}">
+                    <label class="form-check-label" for="homeTeam_{{ game['GameID'] }}">
+                        {{ game['HomeTeam'] }}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="winner_{{ game['GameID'] }}" value="{{ game['AwayTeam'] }}" id="awayTeam_{{ game['GameID'] }}">
+                    <label class="form-check-label" for="awayTeam_{{ game['GameID'] }}">
+                        {{ game['AwayTeam'] }}
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-3">Submit Picks</button>
+        </form>
+    </div>
+
+    <div id="footer">
+        <div id="version-info">{{ version_info }}</div>
+        <a href="/aboutus">About Us</a>
+        <a href="/contactus">Contact Us</a>
+        <a href="#">Careers</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

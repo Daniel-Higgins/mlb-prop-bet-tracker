@@ -35,10 +35,10 @@ html, body {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 20px 0;
+    padding: 10px 0;
     display: flex;
     justify-content: center;
-    gap: 30px; /* Adds space between the links */
+    gap: 60px; /* Adds space between the links */
     bottom: 0;
     width: 100%;
     z-index: 1;
