@@ -1,6 +1,6 @@
 from collections import defaultdict
 import boto3
-
+from operator import itemgetter
 session = boto3.Session()
 
 def do_this():
@@ -8,7 +8,8 @@ def do_this():
     table = dynamodb.Table('history-stats')
 
     response = table.scan()
-    items = response['Items']
+    # Ensure items are sorted by 'TimeDatePlaced' in ascending order
+    items = sorted(response['Items'], key=itemgetter('TimeDatePlaced'))
 
     leaderboard_data = defaultdict(lambda: {
         'numberOfBets': 0,

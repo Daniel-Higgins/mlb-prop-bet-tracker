@@ -1,32 +1,12 @@
-from uuid import uuid4
-
-from getPlayers import *
-import boto3
-
 from datetime import datetime
-session = boto3.Session(aws_access_key_id="AKIATCKANQTKSIM4LEMR", aws_secret_access_key="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")
-dynamodb = session.resource('dynamodb', region_name="us-east-1")
-table = dynamodb.Table('pending-wagers')
+import requests
+# Get the current date
+current_date = datetime.now()
 
-now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# Format the date as 'YYYY-MMM-DD'
+formatted_date = current_date.strftime('%Y-%b-%d').upper()
 
+# Replace the date in the URL
+url = f"https://api.sportsdata.io/v3/mlb/scores/json/GamesByDate/{formatted_date}?key=ae9d60ebe445446e8b4cc35c45dfdfea"
+response = requests.get(url).json()
 
-def do_test():
-    c = 233
-    for _ in range(0, 10):
-        bet_id = str(uuid4())
-        table.put_item(
-                    Item={
-                        'bet_id': str(bet_id),
-                        'WhoMadeTheBet': "Higgins",
-                        'TypeOfBet': "To get a Hit",
-                        'PlayerBetOn': "Anthony Gose",
-                        'Odds': c,
-                        'Book': "DraftKings",
-                        'TimeDatePlaced': now
-                    }
-        )
-        c = c+13
-
-
-do_test()

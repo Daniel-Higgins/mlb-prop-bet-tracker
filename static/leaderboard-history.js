@@ -1,7 +1,5 @@
 $(document).ready(function() {
     console.log("Leaderboard script is running");
-    // Populate the leaderboard as before
-    // ...
 
     // Populate player selection dropdown
     var players = ['Higgins', 'Volz', 'Eddie', 'Mark', 'Danny D'];
@@ -15,6 +13,11 @@ $(document).ready(function() {
         $.getJSON(`/player_history/${player}`, function(data) {
             var tableBody = $('#playerHistoryTable tbody');
             tableBody.empty(); // Clear existing data
+
+            // Sort the data by date in descending order
+            data.sort((a, b) => new Date(b.datePlaced) - new Date(a.datePlaced));
+
+            // Append each sorted bet to the table
             data.forEach(function(bet) {
                 var localDate = new Date(bet.datePlaced + ' UTC'); // Convert UTC to local date
                 var newRow = `<tr>
@@ -40,4 +43,5 @@ $(document).ready(function() {
         }
     });
 });
+
 
