@@ -109,3 +109,62 @@ body {
     font-size: small;
 }
 
+.matchup-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; /* Space between items */
+    justify-content: center;
+}
+
+.matchup {
+    border: 2px solid #ccc; /* Gray border */
+    padding: 10px;
+    text-align: center;
+    width: 670px; /* Width of each matchup box */
+}
+
+.team {
+    font-size: 1.4em; /* Larger text */
+    margin: 5px 0; /* Spacing around team names */
+}
+
+.odds-box {
+    display: inline-block;
+    padding: 5px;
+    margin-left: 60px;
+    border: 2px solid #ccc; /* Example border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light grey background */
+    font-weight: bold; /* Bold font for the spread */
+}
+
+.team-choice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.team-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.team-name {
+    flex-grow: 1;
+}
+
+.odds-box, .point-box {
+    width: 150px;  /* Adjust width as necessary */
+    text-align: center;
+    display: inline-block;
+}
+
+.odds-box {
+    margin-right: 20px;
+}
+
+
+

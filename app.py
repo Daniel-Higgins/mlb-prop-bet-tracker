@@ -8,7 +8,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
-app.config['VERSION_INFO'] = 'V1.1.0'
+app.config['VERSION_INFO'] = 'V1.1.3'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 session = boto3.Session()
@@ -26,6 +26,9 @@ def place_bet():
 @app.route('/submit_bet', methods=['POST'])
 def submit_bet():
     bettor = request.form.get('user')
+    if bettor not in ["Higgins", "Mark", "Volz", "Danny D", "Eddie"]:
+        flash('Not a valid bettor.', 'error')
+        return redirect(url_for('place_bet'))
 
     # Check for existing pending bets for the bettor
     response = table.scan(
@@ -193,23 +196,54 @@ def contactus():
 
 @app.route('/games', methods=['GET'])
 def games():
-    games = get_games_for_today()  # This should now include spread and odds
-    return render_template('games.html', games=games)
+    b_games = get_games_for_today()  # This should now include spread and odds
+    return render_template('games.html', games=b_games, version_info=app.config['VERSION_INFO'])
 
 
 # to edit
 @app.route('/submit_winners', methods=['POST'])
 def submit_winners():
-    selected_winners = request.form.to_dict()
-    print(selected_winners)  # Here you would process the selections and store them in DynamoDB
-    return redirect(url_for('select_winners'))  # Redirect back or to another page as needed
+    user = request.form.get('user')
+    dynamodbt = boto3.resource('dynamodb', region_name='us-east-1')
+    tablet = dynamodbt.Table('daily-picks')
+    today_date = datetime.now().strftime('%Y-%m-%d')
+
+    # Iterate over each game based on the submitted form data
+    for key, value in request.form.items():
+        if key.startswith('winner_'):
+            game_id = key.split('_')[1]
+            picked_winner = value
+            team1 = request.form.get(f"team1_{game_id}")
+            team2 = request.form.get(f"team2_{game_id}")
+            matchup = f"{team1} vs {team2}"
+
+            # Fetching odds and points for the picked team
+            odds = request.form.get(f"{picked_winner}_odds")
+            point = request.form.get(f"{picked_winner}_point")
+
+            # Constructing the item to insert into the database
+            item = {
+                'pick_id': game_id,  # Assuming game ID is unique for each game
+                'user': user,
+                'date': today_date,
+                'matchup': matchup,
+                'picked_winner': picked_winner,
+                'spread': point,
+                'odds': odds,
+                'outcome': 'pending'  # Default outcome, to be updated later
+            }
+
+            # Inserting the item into the DynamoDB table
+            tablet.put_item(Item=item)
+
+    return redirect(url_for('view_picks'))
 
 
-@app.route('/test')
-def testp():
-    mlb_players = fetch_mlb_players()
-    # Render the place bet HTML page
-    return render_template('testp.html', players=mlb_players, version_info=app.config['VERSION_INFO'])
+@app.route('/view_picks', methods=['GET'])
+def view_picks():
+
+    return render_template('view_picks.html', version_info=app.config['VERSION_INFO'])
+
 
 
 if __name__ == '__main__':

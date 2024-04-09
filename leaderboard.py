@@ -46,7 +46,7 @@ def do_this():
 def calculate_streaks(bets):
     current_streak = 0
     longest_streak = 0
-    for bet in reversed(bets):
+    for bet in bets:
         if bet == 'yes':
             current_streak += 1
         else:
