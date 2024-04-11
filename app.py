@@ -1,8 +1,9 @@
 from datetime import datetime
+from user_management import *
 from uuid import uuid4
 import pytz
 from leaderboard import do_this
-from flask import Flask, request, render_template, redirect, flash, url_for, jsonify
+from flask import Flask, request, render_template, redirect, flash, url_for, jsonify, session
 from getPlayers import *
 from boto3.dynamodb.conditions import Attr
 import boto3
@@ -11,8 +12,8 @@ app = Flask(__name__)
 app.config['VERSION_INFO'] = 'V1.1.3'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
-session = boto3.Session()
-dynamodb = session.resource('dynamodb', region_name="us-east-1")
+sessionp = boto3.Session()
+dynamodb = sessionp.resource('dynamodb', region_name="us-east-1")
 table = dynamodb.Table('pending-wagers')
 
 
@@ -196,7 +197,12 @@ def contactus():
 
 @app.route('/games', methods=['GET'])
 def games():
-    b_games = get_games_for_today()  # This should now include spread and odds
+    try:
+        b_games = get_games_for_today()  # This should now include spread and odds
+
+    except:
+        print(Exception)
+
     return render_template('games.html', games=b_games, version_info=app.config['VERSION_INFO'])
 
 
@@ -244,6 +250,104 @@ def view_picks():
 
     return render_template('view_picks.html', version_info=app.config['VERSION_INFO'])
 
+
+@app.route('/account', methods=['GET'])
+def account_page():
+    if 'user_email' in session:
+        # Assume we store user's email in session when they log in
+        user_email = session['user_email']
+
+        user_data = get_user_data(user_email)
+        return render_template('uprofile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        login_result = login_user(email, password)
+
+        if login_result == "User does not exist." or login_result == "Password is incorrect.":
+            flash(login_result)  # Send the error message to the next request
+            return render_template('login.html')  # Render the same login page
+        else:
+            session['user_email'] = email
+            return redirect(url_for('account_page'))
+
+    return render_template('login.html', version_info=app.config['VERSION_INFO'])
+
+
+@app.route('/sign_up', methods=['GET'])
+def sign_up():
+    return render_template('signup.html', version_info=app.config['VERSION_INFO'])
+
+
+# for actual submit on signup
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        # Extract form data
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        favorite_sportsbook = request.form.get('book')
+
+        # Validate input (you might want to add more validation logic)
+        if not all([first_name, last_name, email, password, confirm_password]):
+            flash('Please fill out all fields')
+            return render_template('signup.html')
+
+        if password != confirm_password:
+            flash('Passwords do not match')
+            return render_template('signup.html')
+
+        if len(password) < 4 or len(password) > 20:
+            flash('Password must be between 6 and 20 characters')
+            return render_template('signup.html')
+
+        # Attempt to create a new user
+        data = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'password': password,
+            'favorite_sportsbook': favorite_sportsbook
+        }
+        create_user_result = create_user(data)
+
+        if create_user_result == "User created successfully":
+            flash('User created successfully. Please log in.')
+            return redirect(url_for('login'))
+        else:
+            flash(create_user_result)  # "User already exists" or any other error
+            return render_template('signup.html')
+
+    return render_template('uprofile.html', version_info=app.config['VERSION_INFO'])
+
+
+@app.route('/uprofile', methods=['GET'])
+def uprofile():
+    if 'user_email' in session:  # Check if the user is logged in
+        user_data = {
+            'first_name': session.get('first_name'),
+            'last_name': session.get('last_name'),
+            'email': session.get('email'),
+            'favorite_sportsbook': session.get('favorite_sportsbook')
+        }
+        return render_template('uprofile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
+    else:
+        return redirect(url_for('login'), version_info=app.config['VERSION_INFO'])
+
+
+@app.route('/signout')
+def signout():
+    session.clear()  # This clears all data in the session
+    return redirect(url_for('login'))  # Redirect to the login page or another appropriate page
 
 
 if __name__ == '__main__':

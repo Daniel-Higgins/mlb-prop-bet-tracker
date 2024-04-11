@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Bet</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+
+</head>
+<body>
+    <div id="header">
+        <a href="/">Place Bets</a>
+        <a href="/pending_bets">Pending Bets</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/account">Account</a>
+        <a href="/games">Games</a>
+    </div>
+    <br><br><br>
+    <div class="container">
+        <h2>User Profile</h2>
+        <p>First Name: {{ user_data.first_name }}</p>
+        <p>Last Name: {{ user_data.last_name }}</p>
+        <p>Email: {{ user_data.email }}</p>
+        <p>Favorite Sportsbook: {{ user_data.favorite_sportsbook }}</p>
+        <a href="/">Now Go Bet!</a>
+        <a href="/signout" class="btn btn-warning">Sign Out</a>
+
+    </div>
+
+    <div id="footer">
+        <div id="version-info">{{ version_info }}</div>
+        <a href="/aboutus">About Us</a>
+        <a href="/contactus">Contact Us</a>
+        <a href="#">Careers</a>
+    </div>
+</body>
+</html>
