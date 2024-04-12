@@ -20,20 +20,32 @@ table = dynamodb.Table('pending-wagers')
 @app.route('/')
 def place_bet():
     mlb_players = fetch_mlb_players()
+    user_name = session.get('user_name', None)
+    print(session)
     # Render the place bet HTML page
-    return render_template('place_bet.html', players=mlb_players, version_info=app.config['VERSION_INFO'])
+    return render_template('place_bet.html', players=mlb_players, user_name=user_name, version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/submit_bet', methods=['POST'])
 def submit_bet():
-    bettor = request.form.get('user')
-    if bettor not in ["Higgins", "Mark", "Volz", "Danny D", "Eddie"]:
-        flash('Not a valid bettor.', 'error')
+    # Check if user is logged in
+    if 'user_email' not in session:
+        flash('You need to log in to place a bet.', 'error')
+        return redirect(url_for('login'))
+
+    bettor_email = session['user_email']
+
+    # Retrieve the user data from the database to ensure they are a valid user
+    user_data = get_user_data(bettor_email)
+    if not user_data:
+        flash('Please sign in to continue.', 'error')
         return redirect(url_for('place_bet'))
+
+    bettor_username = user_data['user_name']  # Assuming 'username' is stored in user_data
 
     # Check for existing pending bets for the bettor
     response = table.scan(
-        FilterExpression=Attr('WhoMadeTheBet').eq(bettor) & Attr('Outcome').not_exists()
+        FilterExpression=Attr('WhoMadeTheBet').eq(bettor_username) & Attr('Outcome').not_exists()
     )
 
     if response['Items']:
@@ -42,7 +54,7 @@ def submit_bet():
         return redirect(url_for('place_bet'))
 
     # Validate form data
-    if not all([bettor, request.form.get('betType'), request.form.get('player'),
+    if not all([request.form.get('betType'), request.form.get('player'),
                 request.form.get('odds'), request.form.get('book')]):
         flash('All fields are required!', 'error')
         return redirect(url_for('place_bet'))
@@ -54,7 +66,7 @@ def submit_bet():
             flash('Odds must be greater than -300.', 'error')
             return redirect(url_for('place_bet'))
         elif (-99 < odds < 99) or odds > 10000:
-            flash('Enter Valid Odds.', 'error')
+            flash('Enter valid odds.', 'error')
             return redirect(url_for('place_bet'))
 
         # If validations pass, insert the bet into DynamoDB
@@ -64,7 +76,7 @@ def submit_bet():
         table.put_item(
             Item={
                 'bet_id': bet_id,
-                'WhoMadeTheBet': bettor,
+                'WhoMadeTheBet': bettor_username,
                 'TypeOfBet': request.form.get('betType'),
                 'PlayerBetOn': request.form.get('player'),
                 'Odds': odds,
@@ -91,12 +103,13 @@ def convert_utc_to_local(utc_time_str, user_timezone):
 def pending_bets():
     try:
         response = table.scan()  # Scans the entire table, use with caution for larger datasets
+        user_name = session.get('user_name', None)
         bets = response.get('Items', [])
     except Exception as e:
         print(f"Error fetching pending bets: {e}")
         bets = []
 
-    return render_template('pending_bets.html', bets=bets, version_info=app.config['VERSION_INFO'])
+    return render_template('pending_bets.html', bets=bets,user_name=user_name, version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/bet_outcome', methods=['POST'])
@@ -268,13 +281,16 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        login_result = login_user(email, password)
 
-        if login_result == "User does not exist." or login_result == "Password is incorrect.":
-            flash(login_result)  # Send the error message to the next request
+        user = login_user(email, password)
+
+        if isinstance(user, str):  # Check if the return value is an error message string
+            flash(user)  # Send the error message to the next request
             return render_template('login.html')  # Render the same login page
         else:
-            session['user_email'] = email
+            # Set both email and username in the session
+            session['user_email'] = user['email']
+            session['user_name'] = user['user_name']  # Make sure this key matches your user data structure
             return redirect(url_for('account_page'))
 
     return render_template('login.html', version_info=app.config['VERSION_INFO'])
@@ -290,15 +306,15 @@ def sign_up():
 def signup():
     if request.method == 'POST':
         # Extract form data
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
+        user_name = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         favorite_sportsbook = request.form.get('book')
+        print(user_name)
 
         # Validate input (you might want to add more validation logic)
-        if not all([first_name, last_name, email, password, confirm_password]):
+        if not all([user_name, email, password, confirm_password]):
             flash('Please fill out all fields')
             return render_template('signup.html')
 
@@ -312,8 +328,7 @@ def signup():
 
         # Attempt to create a new user
         data = {
-            'first_name': first_name,
-            'last_name': last_name,
+            'user_name': user_name,
             'email': email,
             'password': password,
             'favorite_sportsbook': favorite_sportsbook
@@ -334,8 +349,7 @@ def signup():
 def uprofile():
     if 'user_email' in session:  # Check if the user is logged in
         user_data = {
-            'first_name': session.get('first_name'),
-            'last_name': session.get('last_name'),
+            'user_name': session.get('user_name'),
             'email': session.get('email'),
             'favorite_sportsbook': session.get('favorite_sportsbook')
         }

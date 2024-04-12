@@ -28,8 +28,7 @@ def create_user(data):
     item = {
         'user_id': user_id,
         'email': email,
-        'first_name': data.get('first_name'),
-        'last_name': data.get('last_name'),
+        'user_name': data.get('user_name'),
         'password': hashed_password,
         'favorite_sportsbook': data.get('favorite_sportsbook')
     }
