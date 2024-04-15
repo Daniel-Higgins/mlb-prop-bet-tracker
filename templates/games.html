@@ -17,21 +17,14 @@
         <a href="/pending_bets">Pending Bets</a>
         <a href="/leaderboard">Leaderboard</a>
         <a href="/account">Account</a>
-        <a href="/games">Games</a>
+
     </div>
     <br><br><br>
        <div class="container">
         <h1 class="text-center">Today's Games with Live Odds and Spread</h1>
         <br>
         <form action="/submit_winners" method="post">
-            <label for="user">Select User:</label>
-            <select class="form" id="user" name="user">
-                <option value="Higgins">Higgins</option>
-                <option value="Volz">Volz</option>
-                <option value="Eddie">Eddie</option>
-                <option value="Mark">Mark</option>
-                <option value="Danny D">Danny D</option>
-            </select><a href="/view_picks"> View previous picks</a>
+            <a href="/view_picks"> View previous picks</a>
             <div class="matchup-container">
                 {% for game in games %}
                     <div class="matchup">

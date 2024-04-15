@@ -9,7 +9,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
-app.config['VERSION_INFO'] = 'V1.1.3'
+app.config['VERSION_INFO'] = 'V1.2.1'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 sessionp = boto3.Session()
@@ -23,7 +23,8 @@ def place_bet():
     user_name = session.get('user_name', None)
     print(session)
     # Render the place bet HTML page
-    return render_template('place_bet.html', players=mlb_players, user_name=user_name, version_info=app.config['VERSION_INFO'])
+    return render_template('place_bet.html', players=mlb_players, user_name=user_name,
+                           version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/submit_bet', methods=['POST'])
@@ -47,12 +48,6 @@ def submit_bet():
     response = table.scan(
         FilterExpression=Attr('WhoMadeTheBet').eq(bettor_username) & Attr('Outcome').not_exists()
     )
-
-    if response['Items']:
-        # There's already a pending bet for this bettor
-        flash('You already have a pending bet.', 'error')
-        return redirect(url_for('place_bet'))
-
     # Validate form data
     if not all([request.form.get('betType'), request.form.get('player'),
                 request.form.get('odds'), request.form.get('book')]):
@@ -67,6 +62,11 @@ def submit_bet():
             return redirect(url_for('place_bet'))
         elif (-99 < odds < 99) or odds > 10000:
             flash('Enter valid odds.', 'error')
+            return redirect(url_for('place_bet'))
+
+        if response['Items']:
+            # There's already a pending bet for this bettor
+            flash('You already have a pending bet.', 'error')
             return redirect(url_for('place_bet'))
 
         # If validations pass, insert the bet into DynamoDB
@@ -109,7 +109,7 @@ def pending_bets():
         print(f"Error fetching pending bets: {e}")
         bets = []
 
-    return render_template('pending_bets.html', bets=bets,user_name=user_name, version_info=app.config['VERSION_INFO'])
+    return render_template('pending_bets.html', bets=bets, user_name=user_name, version_info=app.config['VERSION_INFO'])
 
 
 @app.route('/bet_outcome', methods=['POST'])
@@ -222,7 +222,7 @@ def games():
 # to edit
 @app.route('/submit_winners', methods=['POST'])
 def submit_winners():
-    user = request.form.get('user')
+    user = session['user_name']
     dynamodbt = boto3.resource('dynamodb', region_name='us-east-1')
     tablet = dynamodbt.Table('daily-picks')
     today_date = datetime.now().strftime('%Y-%m-%d')
@@ -260,7 +260,6 @@ def submit_winners():
 
 @app.route('/view_picks', methods=['GET'])
 def view_picks():
-
     return render_template('view_picks.html', version_info=app.config['VERSION_INFO'])
 
 
@@ -356,6 +355,60 @@ def uprofile():
         return render_template('uprofile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
     else:
         return redirect(url_for('login'), version_info=app.config['VERSION_INFO'])
+
+
+@app.route('/chp', methods=['POST'])
+def change_password():
+    old_password = request.form.get('old_password')
+    new_password = request.form.get('new_password')
+    confirm_new_password = request.form.get('confirm_new_password')
+
+    # Check if new passwords match
+    if new_password != confirm_new_password:
+        flash('New passwords do not match.', 'error')
+        return redirect(url_for('account_page'))
+
+    if len(new_password) < 6 or len(new_password) > 20:
+        flash('Password must be between 6 and 20 characters.', 'error')
+        return redirect(url_for('account_page'))
+
+    # Get the current user's email from session
+    user_email = session.get('user_email')
+    if not user_email:
+        flash('No user logged in.', 'error')
+        return redirect(url_for('login'))
+
+    # Fetch the current user's data from DynamoDB
+    dynamodbu = boto3.resource('dynamodb', region_name='us-east-1')
+    user_tableu = dynamodbu.Table('user-accounts')
+    response = user_tableu.get_item(Key={'email': user_email})
+
+    if 'Item' not in response:
+        flash('User not found.', 'error')
+        return redirect(url_for('login'))
+
+    # Check old password
+    user_data = response['Item']
+    if not check_password_hash(user_data['password'], old_password):
+        flash('Old password is incorrect.', 'error')
+        return redirect(url_for('account_page'))
+
+    # Update password if old password is correct
+    hashed_password = generate_password_hash(new_password)
+    try:
+        update_response = user_table.update_item(
+            Key={'email': user_email},
+            UpdateExpression="set password = :p",
+            ExpressionAttributeValues={
+                ':p': hashed_password
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+        flash('Password updated successfully.', 'success')
+    except Exception as e:
+        flash('Failed to update password: ' + str(e), 'error')
+
+    return redirect(url_for('account_page'))
 
 
 @app.route('/signout')

@@ -73,7 +73,7 @@ body {
 }
 
 .flash-messages {
-    margin-top: 60px; /* Adjust this value based on the height of your header */
+    margin-top: 80px; /* Adjust this value based on the height of your header */
     z-index: 101;
 }
 .table-responsive .table{
@@ -167,6 +167,11 @@ body {
 }
 /* In your styles.css file */
 .greeting-message {
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin-top: 10;
+    margin-bottom: 0px;
+}
+
+.reset-form .form-control {
+    width: 25%;  /* Adjust the width as needed */
+    margin: left;  /* Centers the input fields */
 }
