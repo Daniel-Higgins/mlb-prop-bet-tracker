@@ -65,7 +65,7 @@ body {
 }
 
 .row{
-    padding: 80px !important; /* Override padding for .row */
+    padding: 80px; /* Override padding for .row */
 
 }
 .alert{
@@ -73,7 +73,7 @@ body {
 }
 
 .flash-messages {
-    margin-top: 80px; /* Adjust this value based on the height of your header */
+    margin-top: 40px; /* Adjust this value based on the height of your header */
     z-index: 101;
 }
 .table-responsive .table{
@@ -165,13 +165,21 @@ body {
 .odds-box {
     margin-right: 20px;
 }
-/* In your styles.css file */
-.greeting-message {
-    margin-top: 10;
-    margin-bottom: 0px;
-}
 
 .reset-form .form-control {
     width: 25%;  /* Adjust the width as needed */
     margin: left;  /* Centers the input fields */
+}
+/* Reduces the size of the row containing the greeting message */
+.greeting-row {
+    margin-top: 0; /* Reduces space above the row */
+    margin-bottom: 0px; /* Less space below the row */
+    padding: 20px 56px; /* Smaller padding within the row */
+}
+
+/* Specific adjustments to the greeting message to make it less bulky */
+.greeting-message {
+    margin-bottom: 0; /* Removes bottom margin from the h2 element */
+    padding: 5px 0; /* Smaller padding to make the header tighter */
+    font-size: 24px; /* Optional: Adjust font size if still needed */
 }

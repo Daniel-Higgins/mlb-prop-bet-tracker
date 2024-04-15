@@ -20,6 +20,15 @@
         <!--<a href="/games">Games</a>-->
     </div>
     <br><br><br>
+        <div class="container flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
      <div class="container">
         <h2>User Profile</h2>
         <p>UserName: {{ user_data.user_name }}</p>
@@ -45,6 +54,7 @@
             <button type="submit" class="btn btn-primary">Reset Password</button>
         </form>
     </div>
+    <br><br><br><br>
 
 
 

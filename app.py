@@ -268,7 +268,7 @@ def account_page():
     if 'user_email' in session:
         # Assume we store user's email in session when they log in
         user_email = session['user_email']
-
+        print(session)
         user_data = get_user_data(user_email)
         return render_template('uprofile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
     else:
@@ -363,50 +363,48 @@ def change_password():
     new_password = request.form.get('new_password')
     confirm_new_password = request.form.get('confirm_new_password')
 
-    # Check if new passwords match
     if new_password != confirm_new_password:
         flash('New passwords do not match.', 'error')
         return redirect(url_for('account_page'))
 
-    if len(new_password) < 6 or len(new_password) > 20:
-        flash('Password must be between 6 and 20 characters.', 'error')
+    if len(new_password) < 4 or len(new_password) > 20:
+        flash('Password must be between 4 and 20 characters.', 'error')
         return redirect(url_for('account_page'))
 
-    # Get the current user's email from session
     user_email = session.get('user_email')
     if not user_email:
         flash('No user logged in.', 'error')
         return redirect(url_for('login'))
 
-    # Fetch the current user's data from DynamoDB
+    # Get DynamoDB resource
     dynamodbu = boto3.resource('dynamodb', region_name='us-east-1')
     user_tableu = dynamodbu.Table('user-accounts')
-    response = user_tableu.get_item(Key={'email': user_email})
 
-    if 'Item' not in response:
-        flash('User not found.', 'error')
-        return redirect(url_for('login'))
-
-    # Check old password
-    user_data = response['Item']
-    if not check_password_hash(user_data['password'], old_password):
-        flash('Old password is incorrect.', 'error')
-        return redirect(url_for('account_page'))
-
-    # Update password if old password is correct
-    hashed_password = generate_password_hash(new_password)
     try:
-        update_response = user_table.update_item(
-            Key={'email': user_email},
-            UpdateExpression="set password = :p",
-            ExpressionAttributeValues={
-                ':p': hashed_password
-            },
+        # First, retrieve the user by email to check old password and get user_id
+        response = user_table.query(
+            IndexName='email-index',
+            KeyConditionExpression=Key('email').eq(user_email)
+        )
+        if not response['Items']:
+            flash('User not found.', 'error')
+            return redirect(url_for('account_page'))
+
+        user = response['Items'][0]
+        if not check_password_hash(user['password'], old_password):
+            flash('Old password is incorrect.', 'error')
+            return redirect(url_for('account_page'))
+
+        # Update password using the primary key (user_id)
+        user_tableu.update_item(
+            Key={'user_id': user['user_id']},
+            UpdateExpression="SET password = :p",
+            ExpressionAttributeValues={':p': generate_password_hash(new_password)},
             ReturnValues="UPDATED_NEW"
         )
         flash('Password updated successfully.', 'success')
     except Exception as e:
-        flash('Failed to update password: ' + str(e), 'error')
+        flash(str(e), 'error')
 
     return redirect(url_for('account_page'))
 

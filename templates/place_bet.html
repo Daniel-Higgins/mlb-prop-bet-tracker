@@ -17,7 +17,7 @@
         <a href="/pending_bets">Pending Bets</a>
         <a href="/leaderboard">Leaderboard</a>
         <a href="/account">Account</a>
-        <a href="/games">Games</a>
+        <!--<a href="/games">Games</a>-->
     </div>
 
     <div class="container-wrapper">
@@ -30,7 +30,7 @@
                     {% endif %}
                 {% endwith %}
         </div>
-            <div class="row">
+            <div class="row greeting-row">
                 <div class="col-md-12">
                     {% if 'user_name' in session %}
                         <h2 class="greeting-message">Hello, {{ session['user_name'] }}.</h2>
