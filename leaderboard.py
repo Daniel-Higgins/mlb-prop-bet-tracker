@@ -1,7 +1,10 @@
 from collections import defaultdict
 import boto3
 from operator import itemgetter
+from boto3.dynamodb.conditions import Key
+
 session = boto3.Session()
+
 
 def do_this():
     dynamodb = session.resource('dynamodb', region_name="us-east-1")
@@ -53,3 +56,35 @@ def calculate_streaks(bets):
             current_streak = 0
         longest_streak = max(longest_streak, current_streak)
     return current_streak, longest_streak
+
+
+def fix_uid_in_ht():
+    # Initialize DynamoDB resource
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    history_table = dynamodb.Table('history-stats')
+    user_table = dynamodb.Table('user-accounts')
+
+    # Scan the history table
+    response = history_table.scan()
+    history_items = response.get('Items', [])
+
+    for item in history_items:
+        bettor_username = item.get('WhoMadeTheBet')
+
+        # Query the user table to find the user_id
+        user_response = user_table.query(
+            IndexName='username-index',  # Ensure this GSI exists in your user-accounts table
+            KeyConditionExpression=Key('user_name').eq(bettor_username)
+        )
+
+        user_id = user_response['Items'][0].get('user_id') if user_response['Items'] else None
+
+        if user_id:
+            # Update the history item with the user_id
+            update_response = history_table.update_item(
+                Key={'bet_id': item['bet_id']},
+                UpdateExpression="set user_id = :uid",
+                ExpressionAttributeValues={':uid': user_id},
+                ReturnValues="UPDATED_NEW"
+            )
+            print(f"Updated bet_id {item['bet_id']} with user_id {user_id}")

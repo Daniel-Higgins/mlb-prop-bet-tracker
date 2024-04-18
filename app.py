@@ -43,6 +43,7 @@ def submit_bet():
         return redirect(url_for('place_bet'))
 
     bettor_username = user_data['user_name']  # Assuming 'username' is stored in user_data
+    bettor_user_id = user_data.get('user_id')
 
     # Check for existing pending bets for the bettor
     response = table.scan(
@@ -77,6 +78,7 @@ def submit_bet():
             Item={
                 'bet_id': bet_id,
                 'WhoMadeTheBet': bettor_username,
+                'UserId': bettor_user_id,
                 'TypeOfBet': request.form.get('betType'),
                 'PlayerBetOn': request.form.get('player'),
                 'Odds': odds,

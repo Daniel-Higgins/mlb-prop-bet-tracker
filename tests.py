@@ -20,4 +20,3 @@ def get_games_for_today():
     return response
 
 
-print(get_games_for_today())

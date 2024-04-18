@@ -75,4 +75,4 @@ def get_user_data(em):
     # Check if the user exists and return the first item if available
     if response['Items']:
         return response['Items'][0]  # Assuming the first item is the user data
-    return None  # User not found
+    return None
