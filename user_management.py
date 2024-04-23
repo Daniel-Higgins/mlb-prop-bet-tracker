@@ -154,15 +154,23 @@ def delete_userpicks(username):
         print(f"Delete response: {delete_response}")
 
 
-def updateProPic(filepath, object, uem):
+def updateProPic(filepath, objet, uem, old_file_url=None):
     s3 = boto3.client('s3', region_name='us-east-1')
     bucket_name = "mlb-app-stuff"
+
+    if old_file_url and not old_file_url.endswith('default-avatar.png'):
+        try:
+            old_key = old_file_url.split(f'https://{bucket_name}.s3.amazonaws.com/')[1]
+            s3.delete_object(Bucket=bucket_name, Key=old_key)
+        except Exception as e:
+            return False, f"Failed to delete old profile picture: {str(e)}"
+
     try:
         s3.upload_fileobj(
-            object,
+            objet,
             bucket_name,
             filepath,
-            ExtraArgs={'ContentType': object.content_type}
+            ExtraArgs={'ContentType': objet.content_type}
         )
         # Construct the URL to the file
         file_url = f'https://{bucket_name}.s3.amazonaws.com/{filepath}'

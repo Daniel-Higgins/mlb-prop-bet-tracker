@@ -504,10 +504,14 @@ def update_profile_pic():
         return redirect(url_for('login'))
 
     file = request.files.get('profile_pic')
+    user_data = get_user_data(session['user_email'])
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file_key = f"user-stuff/avatar/{session['user_email']}/{filename}"
-        success, message = updateProPic(file_key, file, session['user_email'])
+        old_file_url = user_data.get('profile_pic_url') if user_data else None
+
+        success, message = updateProPic(file_key, file, session['user_email'], old_file_url)
 
         if success:
             flash(message, "success")

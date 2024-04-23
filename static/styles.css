@@ -183,3 +183,9 @@ body {
     padding: 5px 0; /* Smaller padding to make the header tighter */
     font-size: 24px; /* Optional: Adjust font size if still needed */
 }
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    object-fit: cover;
+}
