@@ -152,3 +152,37 @@ def delete_userpicks(username):
             Key={'bet_id': item['bet_id']}
         )
         print(f"Delete response: {delete_response}")
+
+
+def updateProPic(filepath, object, uem):
+    s3 = boto3.client('s3', region_name='us-east-1')
+    bucket_name = "mlb-app-stuff"
+    try:
+        s3.upload_fileobj(
+            object,
+            bucket_name,
+            filepath,
+            ExtraArgs={'ContentType': object.content_type}
+        )
+        # Construct the URL to the file
+        file_url = f'https://{bucket_name}.s3.amazonaws.com/{filepath}'
+
+        # Update DynamoDB with the new URL
+        dynamodbpp = boto3.resource('dynamodb', region_name='us-east-1')
+        user_tablepp = dynamodbpp.Table('user-accounts')
+
+        response = user_tablepp.query(
+            IndexName='email-index',
+            KeyConditionExpression=Key('email').eq(uem)
+        )
+        if response['Items']:
+            user_id = response['Items'][0]['user_id']  # Assuming 'user_id' is the primary key
+            # Now update using the primary key
+            user_tablepp.update_item(
+                Key={'user_id': user_id},
+                UpdateExpression="set profile_pic_url = :p",
+                ExpressionAttributeValues={':p': file_url}
+            )
+            return True, "Profile picture updated successfully!"
+    except Exception as e:
+        return False, str(e)

@@ -1,7 +1,7 @@
-from datetime import datetime
+from werkzeug.utils import secure_filename
+
 from user_management import *
 from uuid import uuid4
-import pytz
 from leaderboard import do_this
 from flask import Flask, request, render_template, redirect, flash, url_for, jsonify, session
 from getPlayers import *
@@ -9,7 +9,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
-app.config['VERSION_INFO'] = 'V1.2.1'
+app.config['VERSION_INFO'] = 'V1.2.8'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 sessionp = boto3.Session()
@@ -370,15 +370,22 @@ def signup():
 
 @app.route('/uprofile', methods=['GET'])
 def uprofile():
-    if 'user_email' in session:  # Check if the user is logged in
-        user_data = {
-            'user_name': session.get('user_name'),
-            'email': session.get('email'),
-            'favorite_sportsbook': session.get('favorite_sportsbook')
-        }
+    if 'user_email' in session:
+        user_email = session['user_email']
+        user_data = get_user_data(user_email)  # Get user data from DynamoDB
+
+        if not user_data:
+            flash("User not found. Please log in again.", "error")
+            return redirect(url_for('login'))
+
+        # Optional: Update session data if necessary
+        session['user_name'] = user_data.get('user_name', '')
+        session['favorite_sportsbook'] = user_data.get('favorite_sportsbook', '')
+
         return render_template('uprofile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
     else:
-        return redirect(url_for('login'), version_info=app.config['VERSION_INFO'])
+        flash("Please log in to view this page.", "error")
+        return redirect(url_for('login', version_info=app.config['VERSION_INFO']))
 
 
 @app.route('/chp', methods=['POST'])
@@ -437,6 +444,85 @@ def change_password():
 def signout():
     session.clear()  # This clears all data in the session
     return redirect(url_for('login'))  # Redirect to the login page or another appropriate page
+
+
+@app.route('/update_profile_picture', methods=['POST'])
+def update_profile_picture():
+    if 'user_email' not in session:
+        flash('You need to log in to update your profile picture.', 'error')
+        return redirect(url_for('login'))
+
+    if 'profile_picture' not in request.files:
+        flash('No file part', 'error')
+        return redirect(url_for('account_page'))
+
+    file = request.files['profile_picture']
+    if file.filename == '':
+        flash('No selected file', 'error')
+        return redirect(url_for('account_page'))
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        s3 = boto3.client('s3', region_name='us-east-1')
+        bucket_name = 'mlb-app-stuff'
+
+        # Create a unique S3 key
+        file_key = f"user-stuff/avatar/{session['user_email']}/{filename}"
+
+        try:
+            s3.upload_fileobj(
+                file,
+                bucket_name,
+                file_key,
+                ExtraArgs={'ACL': 'public-read', 'ContentType': file.content_type}
+            )
+
+            # Store the URL or key in DynamoDB
+            user_tablepp = boto3.resource('dynamodb', region_name='us-east-1').Table('user-accounts')
+            user_tablepp.update_item(
+                Key={'email': session['user_email']},
+                UpdateExpression="set profile_picture = :p",
+                ExpressionAttributeValues={
+                    ':p': f"https://{bucket_name}.s3.amazonaws.com/{file_key}"
+                }
+            )
+            flash('Profile picture updated successfully.', 'success')
+        except Exception as e:
+            print(e)
+            flash('Failed to upload image.', 'error')
+
+        return redirect(url_for('account_page'))
+    else:
+        flash('Invalid file type.', 'error')
+        return redirect(url_for('account_page'))
+
+
+@app.route('/update_profile_pic', methods=['POST'])
+def update_profile_pic():
+    if 'user_email' not in session:
+        flash("You must be logged in to update your profile picture.", "error")
+        return redirect(url_for('login'))
+
+    file = request.files.get('profile_pic')
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_key = f"user-stuff/avatar/{session['user_email']}/{filename}"
+        success, message = updateProPic(file_key, file, session['user_email'])
+
+        if success:
+            flash(message, "success")
+        else:
+            flash(message, "error")
+    else:
+        flash("Invalid file type. Please upload an image.", "error")
+
+    return redirect(url_for('uprofile'))
+
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 if __name__ == '__main__':
