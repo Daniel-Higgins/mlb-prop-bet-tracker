@@ -3,6 +3,9 @@ import boto3
 import requests
 # Get the current date
 from boto3.dynamodb.conditions import Key
+from flask import flash
+
+from user_management import *
 
 current_date = datetime.now()
 yesterday_date = current_date - timedelta(days=1)
@@ -20,3 +23,6 @@ def get_games_for_today():
     return response
 
 
+# Call the function
+# fix_uid_in_ht()
+# fix_password()

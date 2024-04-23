@@ -1,12 +1,18 @@
 $(document).ready(function() {
     console.log("Leaderboard script is running");
 
-    // Populate player selection dropdown
-    var players = ['Higgins', 'Volz', 'Eddie', 'Mark', 'Danny D'];
     var playerSelect = $('#playerSelect');
-    players.forEach(function(player) {
-        playerSelect.append(`<option value="${player}">${player}</option>`);
-    });
+
+        // Fetch usernames and populate the dropdown
+        function fetchUsernames() {
+            $.getJSON('/get_usernames', function(usernames) {
+                usernames.forEach(function(username) {
+                    playerSelect.append(`<option value="${username}">${username}</option>`);
+                });
+            });
+        }
+
+    fetchUsernames();
 
     // Function to fetch and display a player's betting history
     function fetchPlayerHistory(player) {

@@ -200,6 +200,28 @@ def player_history(player):
     return jsonify(player_history_data)
 
 
+from flask import jsonify
+
+
+@app.route('/get_usernames')
+def get_usernames():
+
+    user_tablel = dynamodb.Table('user-accounts')
+    response = user_tablel.scan(AttributesToGet=['user_name'])  # Make sure 'user_name' is the correct attribute key
+
+    usernames = [item['user_name'] for item in response['Items']]
+
+    # Handle pagination if there's a lot of data
+    while 'LastEvaluatedKey' in response:
+        response = user_table.scan(
+            ExclusiveStartKey=response['LastEvaluatedKey'],
+            AttributesToGet=['user_name']
+        )
+        usernames.extend([item['user_name'] for item in response['Items']])
+
+    return jsonify(usernames)
+
+
 @app.route('/aboutus')
 def aboutus():
     return render_template('aboutus.html', version_info=app.config['VERSION_INFO'])
