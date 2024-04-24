@@ -9,6 +9,7 @@ session = boto3.Session()
 def do_this():
     dynamodb = session.resource('dynamodb', region_name="us-east-1")
     table = dynamodb.Table('history-stats')
+    user_table = dynamodb.Table('user-accounts')
 
     response = table.scan()
     # Ensure items are sorted by 'TimeDatePlaced' in ascending order
@@ -21,8 +22,25 @@ def do_this():
         'mostBetPlayer': defaultdict(int),
         'totalOdds': 0,
         'mostUsedBook': defaultdict(int),
-        'betHistory': []
+        'betHistory': [],
+        'profilePicUrl': None
     })
+
+    usernames = set(item['WhoMadeTheBet'] for item in items)
+
+    # Fetch profile picture URLs for all users
+    for username in usernames:
+        user_response = user_table.query(
+            IndexName='user_name-index',  # Make sure this GSI is properly configured
+            KeyConditionExpression=Key('user_name').eq(username)
+        )
+        if user_response['Items']:
+            profile_pic_url = user_response['Items'][0].get('profile_pic_url')
+            #check
+            if not profile_pic_url:
+                profile_pic_url = '/static/default-avatar.png'
+
+            leaderboard_data[username]['profilePicUrl'] = profile_pic_url
 
     for item in items:
         user = item['WhoMadeTheBet']

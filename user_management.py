@@ -193,3 +193,9 @@ def updateProPic(filepath, objet, uem, old_file_url=None):
             return True, "Profile picture updated successfully!"
     except Exception as e:
         return False, str(e)
+
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

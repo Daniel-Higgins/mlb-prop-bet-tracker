@@ -9,7 +9,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 
 app = Flask(__name__)
-app.config['VERSION_INFO'] = 'V1.2.8'
+app.config['VERSION_INFO'] = 'V1.3.1'
 app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
 
 sessionp = boto3.Session()
@@ -165,7 +165,8 @@ def leaderboard_data():
             'longestStreak': stats['longestStreak'],
             'mostBetPlayer': stats['mostBetPlayer'],
             'avgOdds': round(stats['avgOdds'], 2) if stats['numberOfBets'] > 0 else 0,
-            'mostUsedBook': stats['mostUsedBook']
+            'mostUsedBook': stats['mostUsedBook'],
+            'profilePicUrl': stats.get('profilePicUrl')
         } for user, stats in data.items()
     ]
     return jsonify(final_data)
@@ -517,12 +518,6 @@ def update_profile_pic():
         flash("Invalid file type. Please upload an image.", "error")
 
     return redirect(url_for('uprofile'))
-
-
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 if __name__ == '__main__':
