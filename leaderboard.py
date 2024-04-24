@@ -38,7 +38,7 @@ def do_this():
             profile_pic_url = user_response['Items'][0].get('profile_pic_url')
             #check
             if not profile_pic_url:
-                profile_pic_url = '/static/default-avatar.png'
+                profile_pic_url = 'https://mlb-app-stuff.s3.amazonaws.com/user-stuff/avatar/default-avatar.png'
 
             leaderboard_data[username]['profilePicUrl'] = profile_pic_url
 
