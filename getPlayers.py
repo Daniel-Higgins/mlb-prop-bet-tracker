@@ -4,6 +4,8 @@ from datetime import datetime
 
 api_key = 'ae9d60ebe445446e8b4cc35c45dfdfea'
 oa_api_key = 'c80f14133d3748d3c465f41d78bf57e5'
+
+p_akey='9a07e3ed6ebd4f2b896385d086ac95ce'
 # Get the current date
 current_date = datetime.now()
 
@@ -12,7 +14,7 @@ formatted_date = current_date.strftime('%Y-%b-%d').upper()
 
 
 def fetch_mlb_players():
-    url = f'https://api.sportsdata.io/v3/mlb/scores/json/Players?key={api_key}'
+    url = f'https://api.sportsdata.io/v3/mlb/scores/json/Players?key={p_akey}'
 
     response = requests.get(url)
 

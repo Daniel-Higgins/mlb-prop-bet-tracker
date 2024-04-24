@@ -1,7 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Key
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import request
 import random
 
 # Initialize a DynamoDB resource
@@ -113,12 +112,12 @@ def fix_uid_in_ht():
             print(f"No user found for username {bettor_username}")
 
 
-def fix_password(newp):
+def fix_password(bettor, newp):
     try:
         # First, retrieve the user by email to check old password and get user_id
         response = user_table.query(
             IndexName='email-index',
-            KeyConditionExpression=Key('email').eq("eddies1223@gmail.com")
+            KeyConditionExpression=Key('email').eq(bettor)
         )
         user = response['Items'][0]
         user_table.update_item(

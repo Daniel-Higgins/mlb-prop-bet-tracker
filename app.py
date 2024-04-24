@@ -78,7 +78,7 @@ def submit_bet():
             Item={
                 'bet_id': bet_id,
                 'WhoMadeTheBet': bettor_username,
-                'UserId': bettor_user_id,
+                'user_id': bettor_user_id,
                 'TypeOfBet': request.form.get('betType'),
                 'PlayerBetOn': request.form.get('player'),
                 'Odds': odds,
@@ -377,10 +377,6 @@ def uprofile():
         if not user_data:
             flash("User not found. Please log in again.", "error")
             return redirect(url_for('login'))
-
-        # Optional: Update session data if necessary
-        session['user_name'] = user_data.get('user_name', '')
-        session['favorite_sportsbook'] = user_data.get('favorite_sportsbook', '')
 
         return render_template('uprofile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
     else:

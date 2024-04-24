@@ -17,12 +17,6 @@ dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 user_table = dynamodb.Table('user-accounts')
 
 
-def get_games_for_today():
-    url = f'https://api.the-odds-api.com/v4/sports/baseball_mlb/odds?apiKey={oa_api_key}&regions=us&dateFormat=iso&markets=spreads&oddsFormat=american'
-    response = requests.get(url).json()
-    return response
-
-
 # Call the function
 # fix_uid_in_ht()
-# fix_password()
+#fix_password("nickvolz1@gmail.com","idiot_face")
