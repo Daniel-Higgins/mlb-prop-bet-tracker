@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user_data.user_name }}'s Profile</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+
+
+    <div class="container">
+        <h1>{{ user_data.user_name }}'s Profile</h1>
+        <img src="{{ user_data.profile_pic_url }}" alt="Profile Picture" style="width:380px; height:300px;">
+        <!--<p>Email: {{ user_data.email }}</p>-->
+        <br><br>
+        <p>Favorite Sportsbook: {{ user_data.favorite_sportsbook }}</p>
+    </div>
+
+
+    <div id="footer">
+        <div id="version-info">{{ version_info }}</div>
+        <a href="/aboutus">About Us</a>
+        <a href="/contactus">Contact Us</a>
+        <a href="#">Careers</a>
+    </div>
+</body>
+</html>

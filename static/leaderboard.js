@@ -8,7 +8,7 @@ $(document).ready(function() {
                                  `<img src="${row.profilePicUrl}" alt="Profile Pic" style="width:30px; height:30px;">` :
                                  '<img src="https://mlb-app-stuff.s3.amazonaws.com/user-stuff/avatar/default-avatar.png" alt="Profile Pic" style="width:30px; height:30px;">';
             var newRow = `<tr>
-                            <td>${profilePicHtml} ${row.bettorName}</td>
+                            <td><a href="/view_profile/${encodeURIComponent(row.bettorName)}">${profilePicHtml} ${row.bettorName}</a></td>
                             <td>${row.numberOfBets}</td>
                             <td>${row.wins}</td>
                             <td>${row.losses}</td>

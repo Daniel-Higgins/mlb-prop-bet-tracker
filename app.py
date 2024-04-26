@@ -520,5 +520,33 @@ def update_profile_pic():
     return redirect(url_for('uprofile'))
 
 
+@app.route('/view_profile/<username>')
+def view_profile(username):
+    # Fetch user data from DynamoDB using username
+    user_table_up = dynamodb.Table('user-accounts')
+    response = user_table_up.query(
+        IndexName='user_name-index',
+        KeyConditionExpression=Key('user_name').eq(username)
+    )
+    if response['Items']:
+        user_data = response['Items'][0]
+        return render_template('view_profile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
+    else:
+        return "User not found", 404
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
