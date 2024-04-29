@@ -19,6 +19,7 @@ def do_this():
         'numberOfBets': 0,
         'wins': 0,
         'losses': 0,
+        'winPercentage': 0,
         'mostBetPlayer': defaultdict(int),
         'totalOdds': 0,
         'mostUsedBook': defaultdict(int),
@@ -53,6 +54,7 @@ def do_this():
         leaderboard_data[user]['betHistory'].append(item['Outcome'])
 
     for user, data in leaderboard_data.items():
+        data['winPercentage'] = (data['wins'] / data['numberOfBets'] * 100) if data['numberOfBets'] > 0 else 0
         data['avgOdds'] = data['totalOdds'] / data['numberOfBets'] if data['numberOfBets'] else 0
         data['mostBetPlayer'] = max(data['mostBetPlayer'], key=data['mostBetPlayer'].get, default='N/A')
         data['mostUsedBook'] = max(data['mostUsedBook'], key=data['mostUsedBook'].get, default='N/A')
