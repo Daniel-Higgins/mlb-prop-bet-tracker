@@ -11,14 +11,26 @@
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
 </head>
 <body>
-
-
+    <div id="header">
+        <a href="/">Place Bets</a>
+        <a href="/pending_bets">Pending Bets</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/account">Account</a>
+        <!--<a href="/games">Games</a>-->
+    </div>
+    <br><br><br>
     <div class="container">
         <h1>{{ user_data.user_name }}'s Profile</h1>
-        <img src="{{ user_data.profile_pic_url }}" alt="Profile Picture" style="width:380px; height:300px;">
-        <!--<p>Email: {{ user_data.email }}</p>-->
+        <img src="{{ user_data.profile_pic_url if user_data.profile_pic_url else 'https://mlb-app-stuff.s3.amazonaws.com/user-stuff/avatar/default-avatar.png' }}" alt="Profile Picture" style="width:300px; height:250px;">
         <br><br>
         <p>Favorite Sportsbook: {{ user_data.favorite_sportsbook }}</p>
+        <p>Total Bets placed: {{ bet_data.numberOfBets }}</p>
+        <p>Winning Percentage: {{ bet_data.winPercentage }}</p>
+        <p>Average Odds bet: {{ bet_data.avgOdds }}</p>
+        <p>----------------------------------------------------</p>
+        <br>
+        <h4>Last 10 Bets:</h4>
+
     </div>
 
 

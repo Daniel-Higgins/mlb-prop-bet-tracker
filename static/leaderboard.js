@@ -2,7 +2,7 @@ $(document).ready(function() {
     console.log("Leaderboard script is running");
     $.getJSON('/leaderboard_data', function(data) {
         var tableBody = $('#leaderboardTable tbody');
-        tableBody.empty(); // Clear existing data
+        tableBody.empty();
         data.forEach(function(row) {
             var winPercentage = row.numberOfBets > 0 ? ((row.wins / row.numberOfBets) * 100).toFixed(1) + '%' : '0%';
             var profilePicHtml = row.profilePicUrl ?

@@ -2,7 +2,7 @@ from werkzeug.utils import secure_filename
 
 from user_management import *
 from uuid import uuid4
-from leaderboard import do_this
+from leaderboard import do_this, get_bet_data, get_last_10_bet_data
 from flask import Flask, request, render_template, redirect, flash, url_for, jsonify, session
 from getPlayers import *
 from boto3.dynamodb.conditions import Attr
@@ -522,7 +522,8 @@ def update_profile_pic():
 
 @app.route('/view_profile/<username>')
 def view_profile(username):
-    # Fetch user data from DynamoDB using username
+    bet_data = get_bet_data(username)
+    last_10 = get_last_10_bet_data(username)
     user_table_up = dynamodb.Table('user-accounts')
     response = user_table_up.query(
         IndexName='user_name-index',
@@ -530,18 +531,9 @@ def view_profile(username):
     )
     if response['Items']:
         user_data = response['Items'][0]
-        return render_template('view_profile.html', user_data=user_data, version_info=app.config['VERSION_INFO'])
+        return render_template('view_profile.html', user_data=user_data, bet_data=bet_data, last_10=last_10, version_info=app.config['VERSION_INFO'])
     else:
         return "User not found", 404
-
-
-
-
-
-
-
-
-
 
 
 
