@@ -19,3 +19,6 @@ AWS resources used:
 
 
 ![image](https://github.com/Daniel-Higgins/mlb_prop-b_tracker/assets/32625437/3089f681-1866-423f-923b-3c819217f023)
+
+
+![image](https://github.com/Daniel-Higgins/mlb_prop-b_tracker/assets/32625437/1f1e7294-d2b2-4f0d-95ea-0372ed08a0ca)
