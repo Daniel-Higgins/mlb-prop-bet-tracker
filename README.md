@@ -16,6 +16,8 @@ AWS resources used:
  - Multiple Dynamo DB tables with additional GSI indexes
  - S3 buckets to hold static data
  - EC2 instances to host this Python application (and set with custom SGs, NACLs, VPC settings)
+ - Lambda to send periodic emails about reminders/promotions
+ - Everything VPC related for networking
 
 
 
@@ -28,3 +30,8 @@ Leaderboard
 
 Place bet
 ![image](https://github.com/Daniel-Higgins/mlb_prop-b_tracker/assets/32625437/1f1e7294-d2b2-4f0d-95ea-0372ed08a0ca)
+
+
+
+Pending wagers
+![image](https://github.com/Daniel-Higgins/mlb_prop-b_tracker/assets/32625437/c5f9c603-fecf-4e23-b062-e3eda6a3a5a3)
