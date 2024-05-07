@@ -16,3 +16,6 @@ AWS resources used:
  - Multiple Dynamo DB tables with additional GSI indexes
  - S3 buckets to hold static data
  - EC2 instances to host this Python application (and set with custom SGs, NACLs, VPC settings)
+
+
+![image](https://github.com/Daniel-Higgins/mlb_prop-b_tracker/assets/32625437/3089f681-1866-423f-923b-3c819217f023)
