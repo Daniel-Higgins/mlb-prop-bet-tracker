@@ -10,12 +10,14 @@ import boto3
 
 app = Flask(__name__)
 app.config['VERSION_INFO'] = 'V1.3.4'
-app.secret_key = "_5#y2LF4Q8z$as!kz(9,d]/"  # Use the generated key here
+app.secret_key = ""  # Use the generated key here
 
 sessionp = boto3.Session()
 dynamodb = sessionp.resource('dynamodb', region_name="us-east-1")
 table = dynamodb.Table('pending-wagers')
 
+
+#each route has the action it does and is self explanatory
 
 @app.route('/')
 def place_bet():
