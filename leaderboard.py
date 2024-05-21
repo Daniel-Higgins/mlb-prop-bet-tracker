@@ -5,7 +5,7 @@ from boto3.dynamodb.conditions import Key
 
 session = boto3.Session()
 
-
+#populate the leaderboard upon request
 def do_this():
     dynamodb = session.resource('dynamodb', region_name="us-east-1")
     table = dynamodb.Table('history-stats')
@@ -109,7 +109,7 @@ def fix_uid_in_ht():
             )
             print(f"Updated bet_id {item['bet_id']} with user_id {user_id}")
 
-
+#get bet data by user
 def get_bet_data(user_name):
     dynamodb = boto3.resource('dynamodb', region_name="us-east-1")
     history_table = dynamodb.Table('history-stats')
@@ -160,7 +160,7 @@ def get_bet_data(user_name):
 
     return user_data
 
-
+#get stats of last 10 bets
 def get_last_10_bet_data(user_name):
     import boto3
     from collections import defaultdict
