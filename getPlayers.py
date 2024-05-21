@@ -2,10 +2,10 @@ import pytz
 import requests
 from datetime import datetime
 
-api_key = 'ae9d60ebe445446e8b4cc35c45dfdfea'
-oa_api_key = 'c80f14133d3748d3c465f41d78bf57e5'
+api_key = ''
+oa_api_key = ''
 
-p_akey='9a07e3ed6ebd4f2b896385d086ac95ce'
+p_akey=''
 # Get the current date
 current_date = datetime.now()
 
@@ -13,6 +13,8 @@ current_date = datetime.now()
 formatted_date = current_date.strftime('%Y-%b-%d').upper()
 
 
+
+# how we grab the mlb players to fill the drop down arrow
 def fetch_mlb_players():
     url = f'https://api.sportsdata.io/v3/mlb/scores/json/Players?key={p_akey}'
 
@@ -26,22 +28,7 @@ def fetch_mlb_players():
         print(f"Failed to retrieve data: {response.status_code}")
         return []
 
-
-def get_players_propbet_hits():
-    api_key = 'ae9d60ebe445446e8b4cc35c45dfdfea'
-    url = f'https://api.sportsdata.io/v3/mlb/scores/json/GamesByDate/{formatted_date}={api_key}'
-
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        players = response.json()
-        # Returning the list of players
-        return players
-    else:
-        print(f"Failed to retrieve data: {response.status_code}")
-        return []
-
-
+# get games for the day
 def get_games_for_today():
     url = f'https://api.the-odds-api.com/v4/sports/baseball_mlb/odds?apiKey={oa_api_key}&regions=us&dateFormat=iso&markets=spreads&oddsFormat=american'
     response = requests.get(url).json()
