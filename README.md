@@ -10,6 +10,7 @@ Users can also view a leaderboard of how well they, and others, have been bettin
 The beauty of this web app is that it is a system of checks and balances where any one person can update the pending bets page, and anyone can see all the history of bets and report if an error has been made.
 This app can dynamically grow to scale because it utilizes AWS.
 
+-is not live anymore
 
 AWS resources used: 
  - IAM user and roles
