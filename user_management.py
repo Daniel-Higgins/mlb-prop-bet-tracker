@@ -7,7 +7,10 @@ import random
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 user_table = dynamodb.Table('user-accounts')
 
+#this file of methods helps manage users and can fix, create, maintain, and delete users
 
+
+#generate user ID
 def generate_unique_user_id():
     while True:
         user_id = str(random.randint(100, 9999999))  # Example range for user ID
@@ -36,6 +39,7 @@ def create_user(data):
     return "User created successfully"
 
 
+#check if user exists
 def check_user(email):
     # Assuming 'email-index' is the name of the GSI on the 'email' attribute
     response = user_table.query(
@@ -66,6 +70,7 @@ def login_user(email, password):
     return user  # Return user data or a success message
 
 
+#get the user information
 def get_user_data(em):
     response = user_table.query(
         IndexName='email-index',
