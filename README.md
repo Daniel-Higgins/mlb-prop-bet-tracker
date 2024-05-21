@@ -1,4 +1,4 @@
-THE MLB PROP BET TRACKER -is not live anymore
+THE MLB PROP BET TRACKER -temporarily decommissioned
 
 This web application keeps track of all prop bets made by users.
 
